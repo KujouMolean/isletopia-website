@@ -43,8 +43,8 @@ const cards: CardData[] = shuffle(reviews).map((r) => ({
   initial: (r.author[0] || '?').toUpperCase()
 }))
 
-// 轮转均分 3 行
-const ROWS = 3
+// 轮转均分 2 行
+const ROWS = 2
 const rows = computed(() => {
   const result: CardData[][] = Array.from({ length: ROWS }, () => [])
   cards.forEach((c, i) => result[i % ROWS].push(c))
