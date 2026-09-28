@@ -1,0 +1,65 @@
+/* Minecraft 像素字体（文件移植自源项目 public/fonts/Minecraft.woff；拉丁字符集） */
+@font-face {
+  font-family: 'Minecraft';
+  src: url('./fonts/Minecraft.woff') format('woff');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* GNU Unifont 像素字体（scripts/fetch-unifont.mjs 自 unifoundry 官方下载入库），
+   补充 Minecraft 字体缺失的 CJK 等非拉丁字形，与游戏内 unifont 方案一致 */
+@font-face {
+  font-family: 'Unifont';
+  src: url('./fonts/unifont.otf') format('opentype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* MC 字体回退链：拉丁走 Minecraft，中文等非拉丁回退 Unifont（移植自源项目 Tailwind 主题 --font-minecraft）。
+   挂在 :root —— 物品 tooltip 经 Teleport 挂到 body，脱离 .crafting-page 作用域后仍需解析该变量 */
+:root {
+  --font-minecraft: 'Minecraft', 'Unifont', 'Minecraftia', ui-monospace, 'SFMono-Regular', Menlo,
+    Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
+/*
+ * 目录卡片主题变量（移植自源项目 mist / emerald 色阶），默认亮色，.dark 覆盖。
+ * 数值与源项目 Tailwind 4.3 theme.css 一致。
+ * 收敛到 .crafting-page 作用域，避免影响站点其它页面；明暗跟随 VitePress 的 html.dark。
+ */
+.crafting-page {
+  --rc-foreground: oklch(21.8% 0.008 223.9);
+  --rc-card: #ffffff;
+  --rc-border: oklch(87.2% 0.007 219.6);
+  --rc-primary: oklch(59.6% 0.145 163.225);
+  --rc-badge-border: color-mix(in oklab, var(--rc-primary) 35%, transparent);
+  --rc-badge-bg: color-mix(in oklab, var(--rc-primary) 10%, transparent);
+
+  /* MC 槽位配色（亮色）：--minecraft-slot-bg 为 HSL 三元组，供 hsl(var(...)) 使用 */
+  --minecraft-inventory-bg: 0 0% 77.65%;
+  --minecraft-slot-bg: 0 0% 54.51%;
+  --minecraft-slot-border-tl: #373737;
+  --minecraft-slot-border-br: #ffffff;
+
+  /* 整合进站点后不再接管页面背景，配色只作用于自身元素 */
+  color: var(--rc-foreground);
+  /* 源项目 body 字体栈：保留在作用域内，覆盖 VitePress 正文字体使卡片排版与源项目一致 */
+  font-family: 'Segoe UI', 'Microsoft YaHei', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.dark .crafting-page {
+  --rc-foreground: oklch(96.3% 0.002 197.1);
+  --rc-card: oklch(21.8% 0.008 223.9);
+  --rc-border: color-mix(in oklab, oklch(37.8% 0.015 216) 55%, oklch(27.5% 0.011 216.9));
+  --rc-primary: oklch(69.6% 0.17 162.48);
+  --rc-badge-border: color-mix(in oklab, var(--rc-primary) 30%, transparent);
+  --rc-badge-bg: color-mix(in oklab, var(--rc-primary) 15%, transparent);
+
+  --minecraft-inventory-bg: 0 0% 20%;
+  --minecraft-slot-bg: 0 0% 14%;
+  --minecraft-slot-border-tl: #0a0a0a;
+  --minecraft-slot-border-br: #3a3a3a;
+}

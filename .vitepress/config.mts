@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 import { execSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
+import { mcTextures, mcTextureAssets, craftingAssetsInlineLimit } from './mc-textures-plugin.mts'
 
 // 「动态」页聚合的文章目录（须与 NewsFeed.vue 的 glob 保持一致）
 const FEED_DIRS = ['news', 'blogs', 'events', 'changelog', 'notices']
@@ -43,6 +44,16 @@ export default defineConfig({
   title: "梦幻之屿",
   description: "MC梦幻之屿官方网站",
   lang: 'zh-CN',
+  // 合成表页面（/crafting）的物品贴图虚拟模块与资产规则，见 mc-textures-plugin.mts
+  vite: {
+    plugins: [mcTextures()],
+    resolve: {
+      alias: [{ find: '@mc-textures', replacement: mcTextureAssets }]
+    },
+    build: {
+      assetsInlineLimit: craftingAssetsInlineLimit
+    }
+  },
   head: [
     ['link', { rel: 'icon', type: 'image/png', href: '/favicon.png' }],
     // 正文字体：思源黑体（Noto Sans SC），走国内 CDN（Google Fonts 镜像）加速
@@ -112,7 +123,8 @@ export default defineConfig({
           { text: '作品墙', link: '/resources/works' },
           { text: '合影墙', link: '/resources/photos' },
           { text: '服务器图库', link: '/resources/gallery' },
-          { text: '活动Replay回放', link: '/resources/replays' }
+          { text: '活动Replay回放', link: '/resources/replays' },
+          { text: '合成配方查询', link: '/crafting' }
         ]
       },
       { text: '提交反馈', link: 'https://txc.qq.com/products/414594' },

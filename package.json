@@ -8,6 +8,8 @@
     "docs:preview": "vitepress preview"
   },
   "dependencies": {
-    "busuanzi.pure.js": "^1.0.3"
+    "@floating-ui/dom": "^1.8.0",
+    "busuanzi.pure.js": "^1.0.3",
+    "minecraft-textures": "^26.3.0"
   }
 }
