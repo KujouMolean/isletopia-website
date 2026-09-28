@@ -247,16 +247,85 @@ content:
   # ===========================================================================
 
   # 9. 首页（根目录 index.md）
-  # - name: home
-  #   label: 首页
-  #   type: file
-  #   path: index.md
-  #   format: yaml-frontmatter
-  #   fields:
-  #     - { name: layout, label: 布局, type: string, default: page, hidden: true }
-  #     - { name: sidebar, label: 显示侧边栏, type: boolean, default: false, hidden: true }
-  #     - { name: isHome, label: 是否为首页, type: boolean, default: true, hidden: true }
-  #     - { name: body, label: 正文, type: rich-text }
+  # body 是五屏 Vue 组件模板，隐藏以避免 CMS 富文本编辑器破坏组件标签；
+  # intro / features / steps 三屏内容由 HomeIntro / HomeFeatures / HomeSteps 经 useData() 读取
+  - name: home
+    label: 首页
+    type: file
+    path: index.md
+    format: yaml-frontmatter
+    fields:
+      - { name: title, label: 页面标题, type: string, hidden: true }
+      - { name: layout, label: 布局, type: string, default: page, hidden: true }
+      - { name: sidebar, label: 显示侧边栏, type: boolean, default: false, hidden: true }
+      - { name: isHome, label: 是否为首页, type: boolean, default: true, hidden: true }
+      # 第二屏：欢迎介绍（HomeIntro.vue）
+      - name: intro
+        label: 欢迎介绍
+        type: object
+        fields:
+          - { name: title, label: 标题, type: string }
+          - { name: text, label: 介绍正文, type: text }
+          - name: image
+            label: 配图
+            type: image
+            options:
+              media: images
+          - { name: link, label: 链接, type: string }
+          - { name: linkText, label: 链接文字, type: string }
+      # 第三屏：特色玩法（HomeFeatures.vue）
+      - name: features
+        label: 特色玩法
+        type: object
+        fields:
+          - { name: title, label: 标题, type: string }
+          - name: items
+            label: 玩法卡片
+            type: object
+            list: true
+            fields:
+              - name: img
+                label: 插图
+                type: image
+                options:
+                  media: images
+              - { name: title, label: 标题, type: string }
+              - { name: desc, label: 描述, type: text }
+          - { name: moreText, label: 查看更多文字, type: string }
+          - { name: moreLink, label: 查看更多链接, type: string }
+      # 第四屏：新手入服三步（HomeSteps.vue）
+      - name: steps
+        label: 新手入服
+        type: object
+        fields:
+          - { name: title, label: 标题, type: string }
+          - name: cards
+            label: 步骤卡片（固定 3 张）
+            type: object
+            list: true
+            fields:
+              - { name: title, label: 标题, type: string }
+              - { name: text, label: 正文, type: text }
+          - name: clients
+            label: 启动器下载链接
+            type: object
+            list: true
+            fields:
+              - { name: text, label: 名称, type: string }
+              - { name: href, label: 链接, type: string }
+          - name: cta
+            label: 加入QQ群按钮
+            type: object
+            fields:
+              - { name: text, label: 文字, type: string }
+              - { name: link, label: 链接, type: string }
+          - name: guide
+            label: 入服教程链接
+            type: object
+            fields:
+              - { name: text, label: 文字, type: string }
+              - { name: link, label: 链接, type: string }
+      - { name: body, label: 正文, type: rich-text, hidden: true }
 
   # 10. 动态聚合页（根目录 update.md）
   # - name: update-page

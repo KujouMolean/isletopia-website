@@ -1,30 +1,50 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useData } from 'vitepress'
 import CopyIp from './CopyIp.vue'
 
-// 客户端官网下载地址（待你核对一遍）
-const clients = [
-  { text: 'JAVA版官方启动器', href: 'https://www.minecraft.net/zh-hans/download' },
-  { text: 'HMCL启动器', href: 'https://hmcl.huangyuhui.net/download' },
-  { text: 'PCL2启动器', href: 'https://www.pcl2start.cn/' },
-  { text: 'Modrinth App', href: 'https://modrinth.com/app' },
-  { text: 'Axolotl 启动器', href: 'https://axlmc.org/' }
-]
+interface StepCard {
+  title: string
+  text: string
+}
+
+interface ClientLink {
+  text: string
+  href: string
+}
+
+interface CtaLink {
+  text: string
+  link: string
+}
+
+interface StepsConfig {
+  title: string
+  cards: StepCard[]
+  clients: ClientLink[]
+  cta: CtaLink
+  guide: CtaLink
+}
+
+// 内容唯一来源为 index.md frontmatter；缺 steps 时本屏整体不渲染
+// 固定 3 张卡，按位置附带功能区：第 1 张启动器链接 / 第 2 张 CopyIp / 第 3 张 CTA + 教程
+const { frontmatter } = useData()
+const cfg = computed<StepsConfig | null>(() => frontmatter.value.steps ?? null)
 </script>
 
 <template>
-  <section class="home-steps">
+  <section v-if="cfg" class="home-steps">
     <div class="home-steps__inner">
-      <h2 class="home-steps__title">新手入服，只需三步</h2>
+      <h2 class="home-steps__title">{{ cfg.title }}</h2>
 
       <ol class="home-steps__list">
-        <li class="home-steps__card">
-          <span class="home-steps__num" aria-hidden="true">1</span>
-          <h3 class="home-steps__card-title">选择下载客户端</h3>
-          <p class="home-steps__card-text">
-            任选一款 Minecraft 客户端下载并安装，并登录你的正版账号、安装最新版本的游戏：
-          </p>
-          <ul class="home-steps__clients">
-            <li v-for="client in clients" :key="client.href">
+        <li v-for="(card, i) in cfg.cards" :key="card.title" class="home-steps__card">
+          <span class="home-steps__num" aria-hidden="true">{{ i + 1 }}</span>
+          <h3 class="home-steps__card-title">{{ card.title }}</h3>
+          <p class="home-steps__card-text">{{ card.text }}</p>
+
+          <ul v-if="i === 0" class="home-steps__clients">
+            <li v-for="client in cfg.clients" :key="client.href">
               <a
                 :href="client.href"
                 target="_blank"
@@ -33,29 +53,16 @@ const clients = [
               >{{ client.text }}<span aria-hidden="true"> ↗</span></a>
             </li>
           </ul>
-        </li>
 
-        <li class="home-steps__card">
-          <span class="home-steps__num" aria-hidden="true">2</span>
-          <h3 class="home-steps__card-title">登录服务器</h3>
-          <p class="home-steps__card-text">
-            打开客户端，进入「多人游戏 → 添加服务器」，填入下方地址并加入：
-          </p>
-          <CopyIp class="home-steps__ip" />
-        </li>
+          <CopyIp v-if="i === 1" class="home-steps__ip" />
 
-        <li class="home-steps__card">
-          <span class="home-steps__num" aria-hidden="true">3</span>
-          <h3 class="home-steps__card-title">加入社区，寻求帮助</h3>
-          <p class="home-steps__card-text">
-            首次入服连不上、不会开局、找不到物资...
-            立刻加入 QQ 群，总有大佬乐意帮忙解答。
-          </p>
-          <a href="/join-us" class="home-steps__cta">加入 QQ 群</a>
-          <a href="/guide/beginner/入服教程" class="home-steps__guide">
-            入服教程
-            <span aria-hidden="true">→</span>
-          </a>
+          <template v-if="i === 2">
+            <a :href="cfg.cta.link" class="home-steps__cta">{{ cfg.cta.text }}</a>
+            <a :href="cfg.guide.link" class="home-steps__guide">
+              {{ cfg.guide.text }}
+              <span aria-hidden="true">→</span>
+            </a>
+          </template>
         </li>
       </ol>
     </div>
