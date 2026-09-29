@@ -71,10 +71,6 @@ function formatDate(date: string) {
   --cat-1: var(--vp-c-text-2);
   --cat-soft: var(--vp-c-bg-soft);
 }
-.card--news {
-  --cat-1: #5c73e7;
-  --cat-soft: rgba(92, 115, 231, 0.12);
-}
 .card--blogs {
   --cat-1: #16a34a;
   --cat-soft: rgba(22, 163, 74, 0.12);
@@ -92,10 +88,6 @@ function formatDate(date: string) {
   --cat-soft: rgba(220, 38, 38, 0.12);
 }
 
-.dark .card--news {
-  --cat-1: #a8b1ff;
-  --cat-soft: rgba(168, 177, 255, 0.16);
-}
 .dark .card--blogs {
   --cat-1: #4ade80;
   --cat-soft: rgba(74, 222, 128, 0.16);

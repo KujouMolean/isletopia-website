@@ -9,7 +9,7 @@ const MAX_BATCH_SIZE = 24
 const PER_BATCH = Math.min(BATCH_SIZE, MAX_BATCH_SIZE)
 
 // 文章目录 md 原文（?raw 由 Vite 直接读盘），运行时按需加载
-const rawModules = import.meta.glob('/{news,blogs,events,changelog,notices}/**/*.md', {
+const rawModules = import.meta.glob('/{blogs,events,changelog,notices}/**/*.md', {
   query: '?raw',
   import: 'default'
 })
@@ -26,7 +26,7 @@ const VIEW_OPTIONS: { id: LayoutMode; label: string }[] = [
 // 各模式期望列数；小屏按断点向下收缩，避免过挤
 const PREFERRED_COLS: Record<LayoutMode, number> = { cols4: 4, cols2: 2, timeline: 1 }
 
-// 文章类型筛选：'all' 或分类目录名（news/blogs/events/changelog/notices）；与布局一样持久化
+// 文章类型筛选：'all' 或分类目录名（blogs/events/changelog/notices）；与布局一样持久化
 type TypeFilter = 'all' | keyof typeof CATEGORY_LABELS
 const TYPE_STORAGE_KEY = 'news-feed-type'
 const TYPE_OPTIONS: { id: TypeFilter; label: string }[] = [

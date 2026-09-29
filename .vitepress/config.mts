@@ -5,7 +5,7 @@ import path from 'node:path'
 import { mcTextures, mcTextureAssets, craftingAssetsInlineLimit } from './mc-textures-plugin.mts'
 
 // 「动态」页聚合的文章目录（须与 NewsFeed.vue 的 glob 保持一致）
-const FEED_DIRS = ['news', 'blogs', 'events', 'changelog', 'notices']
+const FEED_DIRS = ['blogs', 'events', 'changelog', 'notices']
 
 // —— 文章「最后修改时间」：取自 md 文件的 git 最后提交时间，无需手工维护 frontmatter ——
 const repoRoot = path.resolve(fileURLToPath(new URL('..', import.meta.url)))

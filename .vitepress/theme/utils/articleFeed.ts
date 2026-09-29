@@ -16,7 +16,6 @@ export interface Article {
 }
 
 export const CATEGORY_LABELS: Record<string, string> = {
-  news: '新闻',
   blogs: '博客',
   events: '活动',
   changelog: '更新日志',
@@ -91,7 +90,7 @@ function extractImages(body: string, dir: string): string[] {
 const asList = (v: string | string[] | undefined): string[] =>
   Array.isArray(v) ? v : typeof v === 'string' && v !== '' ? [v] : []
 
-// entries: [globKey, rawText] 对，如 ['/news/foo.md', '---\n...']
+// entries: [globKey, rawText] 对，如 ['/blogs/foo.md', '---\n...']
 export function buildArticles(
   entries: ReadonlyArray<readonly [string, string]>
 ): Article[] {
@@ -102,12 +101,12 @@ export function buildArticles(
     const name = path.replace(/^.*\//, '').replace(/\.md$/, '')
     const { data, body } = parseFrontmatter(raw)
     if (data.hide === 'true') continue
-    // 「动态」页自身（docs/news/index.md，layout: page）不进列表
+    // 「动态」页自身（update.md，layout: page）不进列表
     if (data.layout === 'page') continue
     const category =
       (typeof data.category === 'string' && data.category) ||
-      dir.split('/')[1] ||
-      'news'
+      dir.split('/')[0] ||
+      'blogs'
     const images = extractImages(body, dir)
     list.push({
       title: (typeof data.title === 'string' && data.title) || name,

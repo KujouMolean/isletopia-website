@@ -54,7 +54,7 @@ function toggleExpand() {
 // 在第一个 h1 后面插入元信息
 onMounted(async () => {
   // 只对「动态」文章页生效（目录与 NewsFeed.vue 的 glob 保持一致）
-  if (!/^\/(news|blogs|events|changelog|notices)\//.test(route.path)) return
+  if (!/^\/(blogs|events|changelog|notices)\//.test(route.path)) return
 
   // 等待 DOM 更新
   await nextTick()
