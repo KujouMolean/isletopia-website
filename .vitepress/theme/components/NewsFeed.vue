@@ -193,8 +193,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="news-feed" :class="{ 'news-feed--narrow': layoutMode !== 'cols4' }">
-    <!-- 页面顶部工具栏：左侧视图切换，右侧文章类型切换 -->
+  <!-- 顶部工具栏：置于 .news-feed 容器外，宽度规则复刻 navbar，实现与 navbar 等宽 -->
+  <div class="news-feed__toolbar-outer">
     <div class="news-feed__toolbar">
       <div class="news-feed__switcher" role="group" aria-label="切换布局视图">
         <button
@@ -251,7 +251,7 @@ onBeforeUnmount(() => {
           :key="t.id"
           type="button"
           class="news-feed__switch-btn"
-          :class="{ 'is-active': typeFilter === t.id }"
+          :class="[{ 'is-active': typeFilter === t.id }, `news-feed__switch-btn--${t.id}`]"
           :aria-pressed="typeFilter === t.id"
           @click="applyType(t.id)"
         >
@@ -259,7 +259,9 @@ onBeforeUnmount(() => {
         </button>
       </div>
     </div>
+  </div>
 
+  <div class="news-feed" :class="{ 'news-feed--narrow': layoutMode !== 'cols4' }">
     <p v-if="loading" class="news-feed__status">正在加载文章…</p>
 
     <template v-else>
@@ -374,13 +376,32 @@ onBeforeUnmount(() => {
   gap: 1rem;
 }
 
-/* 顶部工具栏：左侧视图切换、右侧类型筛选；放不下时类型筛选整体换行 */
+/* 顶部工具栏外层：复刻 navbar 的 wrapper 内边距；内层再套 navbar container 的宽度 */
+.news-feed__toolbar-outer {
+  padding: 1.5rem 0.5rem 0 1.5rem;
+}
+
+/* 手机视图（<48rem，与 navbar 断点一致）：两行、左对齐 */
 .news-feed__toolbar {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem 0.75rem;
-  margin: 0 0 1.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  max-width: calc(var(--vp-layout-max-width) - 4rem);
+  margin: 0 auto;
+}
+
+@media (min-width: 48rem) {
+  .news-feed__toolbar-outer {
+    padding: 1.5rem 2rem 0;
+  }
+  /* 桌面视图：单行，类型筛选靠右；放不下时整体换行 */
+  .news-feed__toolbar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+  }
 }
 
 /* 页面顶部的视图切换器（分段控件样式） */
@@ -393,9 +414,8 @@ onBeforeUnmount(() => {
   background-color: var(--vp-c-bg-soft);
 }
 
-/* 类型切换器靠右；极窄屏下允许横向滑动，隐藏滚动条 */
+/* 类型切换器；极窄屏下允许横向滑动，隐藏滚动条（桌面端的靠右见上方媒体查询） */
 .news-feed__type-switcher {
-  margin-left: auto;
   max-width: 100%;
   overflow-x: auto;
   scrollbar-width: none;
@@ -426,5 +446,32 @@ onBeforeUnmount(() => {
   background-color: var(--vp-c-bg);
   color: var(--vp-c-brand-1);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 类型按钮激活态文字使用对应分类配色（与 FeedCard.vue 的分类配色保持一致）；
+   「全部」与左侧布局视图按钮仍用主题色 */
+.news-feed__switch-btn--blogs.is-active {
+  color: #16a34a;
+}
+.news-feed__switch-btn--events.is-active {
+  color: #ea580c;
+}
+.news-feed__switch-btn--changelog.is-active {
+  color: #64748b;
+}
+.news-feed__switch-btn--notices.is-active {
+  color: #dc2626;
+}
+.dark .news-feed__switch-btn--blogs.is-active {
+  color: #4ade80;
+}
+.dark .news-feed__switch-btn--events.is-active {
+  color: #fb923c;
+}
+.dark .news-feed__switch-btn--changelog.is-active {
+  color: #94a3b8;
+}
+.dark .news-feed__switch-btn--notices.is-active {
+  color: #f87171;
 }
 </style>
