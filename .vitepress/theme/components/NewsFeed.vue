@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
-import { buildArticles, type Article } from '../utils/articleFeed'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { buildArticles, CATEGORY_LABELS, type Article } from '../utils/articleFeed'
 import FeedCard from './FeedCard.vue'
 
 // 单批渲染的卡片数量（上限由 MAX_BATCH_SIZE 钳制，下滑触底自动加载下一批）
@@ -26,22 +26,37 @@ const VIEW_OPTIONS: { id: LayoutMode; label: string }[] = [
 // 各模式期望列数；小屏按断点向下收缩，避免过挤
 const PREFERRED_COLS: Record<LayoutMode, number> = { cols4: 4, cols2: 2, timeline: 1 }
 
+// 文章类型筛选：'all' 或分类目录名（news/blogs/events/changelog/notices）；与布局一样持久化
+type TypeFilter = 'all' | keyof typeof CATEGORY_LABELS
+const TYPE_STORAGE_KEY = 'news-feed-type'
+const TYPE_OPTIONS: { id: TypeFilter; label: string }[] = [
+  { id: 'all', label: '全部' },
+  ...Object.entries(CATEGORY_LABELS).map(([id, label]) => ({ id, label }))
+]
+
 const articles = ref<Article[]>([])
 const loading = ref(true)
 const visibleCount = ref(PER_BATCH)
 const colCount = ref(PREFERRED_COLS.cols2)
 const layoutMode = ref<LayoutMode>('cols2')
+const typeFilter = ref<TypeFilter>('all')
 const sentinel = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
 // 切页即卸载；恢复滚动是异步流程，卸载后须终止，否则会把新页面滚走
 let unmounted = false
 
-const hasMore = computed(() => visibleCount.value < articles.value.length)
+const filteredArticles = computed(() =>
+  typeFilter.value === 'all'
+    ? articles.value
+    : articles.value.filter((a) => a.category === typeFilter.value)
+)
+
+const hasMore = computed(() => visibleCount.value < filteredArticles.value.length)
 
 // 瀑布流：按列轮转均分，追加批次时已有卡片不位移
 const columns = computed(() => {
   const cols: Article[][] = Array.from({ length: colCount.value }, () => [])
-  articles.value.slice(0, visibleCount.value).forEach((a, i) => {
+  filteredArticles.value.slice(0, visibleCount.value).forEach((a, i) => {
     cols[i % colCount.value].push(a)
   })
   return cols
@@ -56,7 +71,7 @@ interface MonthGroup {
 const timelineGroups = computed<MonthGroup[]>(() => {
   const groups: MonthGroup[] = []
   let current: MonthGroup | null = null
-  for (const a of articles.value.slice(0, visibleCount.value)) {
+  for (const a of filteredArticles.value.slice(0, visibleCount.value)) {
     const key = /^\d{4}-\d{2}-/.test(a.date) ? a.date.slice(0, 7) : 'undated'
     if (!current || current.key !== key) {
       current = {
@@ -78,9 +93,17 @@ function applyLayout(mode: LayoutMode) {
   syncColumns()
 }
 
+function applyType(type: TypeFilter) {
+  if (typeFilter.value === type) return
+  typeFilter.value = type
+  localStorage.setItem(TYPE_STORAGE_KEY, type)
+  // 新类型从第一批重新分页，不继承上一类型已展开的批数
+  visibleCount.value = PER_BATCH
+}
+
 function loadMore() {
   if (hasMore.value) {
-    visibleCount.value = Math.min(visibleCount.value + PER_BATCH, articles.value.length)
+    visibleCount.value = Math.min(visibleCount.value + PER_BATCH, filteredArticles.value.length)
   }
 }
 
@@ -90,11 +113,29 @@ function syncColumns() {
   colCount.value = Math.min(PREFERRED_COLS[layoutMode.value], max)
 }
 
+// 哨兵元素随 v-if 卸载/重建（如切换类型后 hasMore 翻转），观察器须跟着重新挂载
+watch(
+  sentinel,
+  (el) => {
+    observer?.disconnect()
+    observer = null
+    if (!el) return
+    observer = new IntersectionObserver(
+      (list) => list.some((e) => e.isIntersecting) && loadMore(),
+      { rootMargin: '300px 0px' }
+    )
+    observer.observe(el)
+  },
+  { flush: 'post' }
+)
+
 onMounted(async () => {
   const saved = localStorage.getItem(LAYOUT_STORAGE_KEY)
   if (saved === 'cols4' || saved === 'cols2' || saved === 'timeline') {
     layoutMode.value = saved
   }
+  const savedType = localStorage.getItem(TYPE_STORAGE_KEY)
+  if (savedType) typeFilter.value = savedType
   syncColumns()
   window.addEventListener('resize', syncColumns)
 
@@ -104,6 +145,13 @@ onMounted(async () => {
     )
   )
   articles.value = buildArticles(entries)
+  // 持久化的类型可能已无对应文章（目录移除等），回退为全部
+  if (
+    typeFilter.value !== 'all' &&
+    !articles.value.some((a) => a.category === typeFilter.value)
+  ) {
+    typeFilter.value = 'all'
+  }
   loading.value = false
   await nextTick()
 
@@ -118,7 +166,7 @@ onMounted(async () => {
   if (typeof restoreTo === 'number' && restoreTo > 0) {
     const maxScroll = () => document.documentElement.scrollHeight - window.innerHeight
     while (!unmounted && hasMore.value && maxScroll() < restoreTo) {
-      visibleCount.value = Math.min(visibleCount.value + PER_BATCH, articles.value.length)
+      visibleCount.value = Math.min(visibleCount.value + PER_BATCH, filteredArticles.value.length)
       await nextTick()
     }
     if (unmounted) return
@@ -135,14 +183,6 @@ onMounted(async () => {
     ])
     if (!unmounted && window.scrollY < restoreTo) window.scrollTo(0, restoreTo)
   }
-
-  if (sentinel.value) {
-    observer = new IntersectionObserver(
-      (list) => list.some((e) => e.isIntersecting) && loadMore(),
-      { rootMargin: '300px 0px' }
-    )
-    observer.observe(sentinel.value)
-  }
 })
 
 onBeforeUnmount(() => {
@@ -154,54 +194,70 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="news-feed" :class="{ 'news-feed--narrow': layoutMode !== 'cols4' }">
-    <!-- 页面顶部的视图切换器 -->
-    <div class="news-feed__switcher" role="group" aria-label="切换布局视图">
-      <button
-        v-for="v in VIEW_OPTIONS"
-        :key="v.id"
-        type="button"
-        class="news-feed__switch-btn"
-        :class="{ 'is-active': layoutMode === v.id }"
-        :title="v.label"
-        :aria-label="v.label"
-        :aria-pressed="layoutMode === v.id"
-        @click="applyLayout(v.id)"
-      >
-        <svg
-          v-if="v.id === 'cols4'"
-          viewBox="0 0 16 16"
-          width="16"
-          height="16"
-          fill="currentColor"
-          aria-hidden="true"
+    <!-- 页面顶部工具栏：左侧视图切换，右侧文章类型切换 -->
+    <div class="news-feed__toolbar">
+      <div class="news-feed__switcher" role="group" aria-label="切换布局视图">
+        <button
+          v-for="v in VIEW_OPTIONS"
+          :key="v.id"
+          type="button"
+          class="news-feed__switch-btn"
+          :class="{ 'is-active': layoutMode === v.id }"
+          :title="v.label"
+          :aria-label="v.label"
+          :aria-pressed="layoutMode === v.id"
+          @click="applyLayout(v.id)"
         >
-          <rect x="1" y="2.5" width="2.4" height="11" rx="0.8" />
-          <rect x="4.8" y="2.5" width="2.4" height="11" rx="0.8" />
-          <rect x="8.6" y="2.5" width="2.4" height="11" rx="0.8" />
-          <rect x="12.4" y="2.5" width="2.4" height="11" rx="0.8" />
-        </svg>
-        <svg
-          v-else-if="v.id === 'cols2'"
-          viewBox="0 0 16 16"
-          width="16"
-          height="16"
-          fill="currentColor"
-          aria-hidden="true"
+          <svg
+            v-if="v.id === 'cols4'"
+            viewBox="0 0 16 16"
+            width="16"
+            height="16"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <rect x="1" y="2.5" width="2.4" height="11" rx="0.8" />
+            <rect x="4.8" y="2.5" width="2.4" height="11" rx="0.8" />
+            <rect x="8.6" y="2.5" width="2.4" height="11" rx="0.8" />
+            <rect x="12.4" y="2.5" width="2.4" height="11" rx="0.8" />
+          </svg>
+          <svg
+            v-else-if="v.id === 'cols2'"
+            viewBox="0 0 16 16"
+            width="16"
+            height="16"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <rect x="1.8" y="2.5" width="5" height="11" rx="1" />
+            <rect x="9.2" y="2.5" width="5" height="11" rx="1" />
+          </svg>
+          <svg v-else viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+            <path d="M3.5 2.5v11" stroke="currentColor" stroke-width="1.6" fill="none" />
+            <circle cx="3.5" cy="4" r="1.5" fill="currentColor" />
+            <circle cx="3.5" cy="8" r="1.5" fill="currentColor" />
+            <circle cx="3.5" cy="12" r="1.5" fill="currentColor" />
+            <rect x="7" y="3.2" width="7.2" height="1.8" rx="0.9" fill="currentColor" />
+            <rect x="7" y="7.2" width="7.2" height="1.8" rx="0.9" fill="currentColor" />
+            <rect x="7" y="11.2" width="7.2" height="1.8" rx="0.9" fill="currentColor" />
+          </svg>
+          <span>{{ v.label }}</span>
+        </button>
+      </div>
+
+      <div class="news-feed__switcher news-feed__type-switcher" role="group" aria-label="按文章类型筛选动态">
+        <button
+          v-for="t in TYPE_OPTIONS"
+          :key="t.id"
+          type="button"
+          class="news-feed__switch-btn"
+          :class="{ 'is-active': typeFilter === t.id }"
+          :aria-pressed="typeFilter === t.id"
+          @click="applyType(t.id)"
         >
-          <rect x="1.8" y="2.5" width="5" height="11" rx="1" />
-          <rect x="9.2" y="2.5" width="5" height="11" rx="1" />
-        </svg>
-        <svg v-else viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
-          <path d="M3.5 2.5v11" stroke="currentColor" stroke-width="1.6" fill="none" />
-          <circle cx="3.5" cy="4" r="1.5" fill="currentColor" />
-          <circle cx="3.5" cy="8" r="1.5" fill="currentColor" />
-          <circle cx="3.5" cy="12" r="1.5" fill="currentColor" />
-          <rect x="7" y="3.2" width="7.2" height="1.8" rx="0.9" fill="currentColor" />
-          <rect x="7" y="7.2" width="7.2" height="1.8" rx="0.9" fill="currentColor" />
-          <rect x="7" y="11.2" width="7.2" height="1.8" rx="0.9" fill="currentColor" />
-        </svg>
-        <span>{{ v.label }}</span>
-      </button>
+          {{ t.label }}
+        </button>
+      </div>
     </div>
 
     <p v-if="loading" class="news-feed__status">正在加载文章…</p>
@@ -230,7 +286,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div v-if="hasMore" ref="sentinel" class="news-feed__status">正在加载…</div>
-      <p v-else class="news-feed__status">已显示全部 {{ articles.length }} 条动态</p>
+      <p v-else class="news-feed__status">已显示全部 {{ filteredArticles.length }} 条动态</p>
     </template>
   </div>
 </template>
@@ -318,15 +374,34 @@ onBeforeUnmount(() => {
   gap: 1rem;
 }
 
+/* 顶部工具栏：左侧视图切换、右侧类型筛选；放不下时类型筛选整体换行 */
+.news-feed__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin: 0 0 1.5rem;
+}
+
 /* 页面顶部的视图切换器（分段控件样式） */
 .news-feed__switcher {
   display: inline-flex;
   gap: 0.25rem;
-  margin: 0 0 1.5rem;
   padding: 0.25rem;
   border: 1px solid var(--vp-c-divider);
   border-radius: 0.625rem;
   background-color: var(--vp-c-bg-soft);
+}
+
+/* 类型切换器靠右；极窄屏下允许横向滑动，隐藏滚动条 */
+.news-feed__type-switcher {
+  margin-left: auto;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.news-feed__type-switcher::-webkit-scrollbar {
+  display: none;
 }
 
 .news-feed__switch-btn {
