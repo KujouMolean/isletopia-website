@@ -395,11 +395,12 @@ onBeforeUnmount(() => {
   .news-feed__toolbar-outer {
     padding: 1.5rem 2rem 0;
   }
-  /* 桌面视图：单行，类型筛选靠右；放不下时整体换行 */
+  /* 桌面视图：单行、两个切换器整体居中；放不下时换行 */
   .news-feed__toolbar {
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem 0.75rem;
   }
 }

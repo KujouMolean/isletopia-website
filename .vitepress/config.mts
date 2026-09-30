@@ -147,13 +147,12 @@ export default defineConfig({
           { text: '🏝 服务器简介', link: '/guide/intro' },
           { text: '⭐ 特色玩法', link: '/guide/features' },
           { text: '📕 新手教程', link: '/guide/beginner' },
-          { text: '🤔 常见问题(FAQ)', link: '/guide/faq' },
           { text: '📚 Wiki', link: '/guide/wiki' },
           { text: '📃 规则', link: '/guide/rules' }
         ]
       },
       {
-        text: '🗂️ 工具与下载',
+        text: '🗂️ 资源与工具',
         items: [
           // 存档下载改走外链（mc.molean.com），链接统一在 theme/config/links.ts
           { text: '🌐 岛屿存档下载', link: LINKS.saveDownloadUrl },
@@ -165,6 +164,7 @@ export default defineConfig({
           { text: '🍲 合成配方查询', link: '/crafting' }
         ]
       },
+      { text: '🤔 常见问题(FAQ)', link: '/guide/faq' },
       { text: '💬 提交反馈', link: LINKS.feedbackUrl },
       { text: '🏝 关于', link: '/about' }
     ],
