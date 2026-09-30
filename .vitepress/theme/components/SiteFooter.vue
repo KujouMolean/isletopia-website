@@ -3,9 +3,9 @@ import { computed, nextTick, onMounted, watch } from 'vue'
 // 构建时内联当前 vitepress 版本号
 import { version as vitepressVersion } from 'vitepress/package.json'
 import { useRoute } from 'vitepress'
-import { SITE_INFO, SITE_LINKS, SOCIAL_LINKS } from '../config'
+import { LINKS, SITE_INFO } from '../config'
 
-// —— 站点文案与数据（theme/config/siteInfo.ts、siteLinks.ts）——
+// —— 站点文案与数据（theme/config/）——
 const SLOGAN = SITE_INFO.slogan
 const SERVER_START = SITE_INFO.serverStartDate
 
@@ -48,19 +48,9 @@ const uptime = computed(() => {
 // 版权年份动态取当前年，避免每年手改
 const copyrightYear = new Date().getFullYear()
 
-// 相关链接：外部站点取自 siteLinks.ts，自有媒体平台直接引用 SOCIAL_LINKS（避免 URL 重复维护）
-const relatedLinks: { text: string; href: string }[] = [
-  { text: 'Minecraft官网', href: SITE_LINKS.minecraftSite },
-  { text: 'Minecraft Wiki（中文）', href: SITE_LINKS.minecraftWiki },
-  { text: 'MODMC服务器列表详情页', href: SITE_LINKS.mcmodPage },
-  { text: '苦力怕论坛宣传贴', href: SITE_LINKS.klpbbsThread },
-  { text: 'NameMC详情页', href: SITE_LINKS.nameMcServer },
-  ...SOCIAL_LINKS.filter((l) => l.external).map((l) => ({ text: l.name, href: l.href }))
-]
-
-// 均分两列，各自独立成列
-const mid = Math.ceil(relatedLinks.length / 2)
-const linkColumns = [relatedLinks.slice(0, mid), relatedLinks.slice(mid)]
+// 相关链接内容在 theme/config/links.ts 的 related，此处只做视图切分：均分两列，各自独立成列
+const mid = Math.ceil(LINKS.related.length / 2)
+const linkColumns = [LINKS.related.slice(0, mid), LINKS.related.slice(mid)]
 </script>
 
 <template>
@@ -102,13 +92,13 @@ const linkColumns = [relatedLinks.slice(0, mid), relatedLinks.slice(mid)]
         Not an official Minecraft website. We are not associated with Mojang or Microsoft.
       </p>
       <p class="site-footer__line">
-        <a :href="SITE_LINKS.legalPages.disclaimer">免责声明</a>
+        <a :href="LINKS.legalPages.disclaimer">免责声明</a>
         <span class="site-footer__divider">|</span>
-        <a :href="SITE_LINKS.legalPages.copyright">版权声明</a>
+        <a :href="LINKS.legalPages.copyright">版权声明</a>
         <span class="site-footer__divider">|</span>
-        <a :href="SITE_LINKS.legalPages.cookiePolicy">Cookie 政策</a>
+        <a :href="LINKS.legalPages.cookiePolicy">Cookie 政策</a>
         <span class="site-footer__divider">|</span>
-        <a :href="SITE_LINKS.legalPages.privacyPolicy">隐私政策</a>
+        <a :href="LINKS.legalPages.privacyPolicy">隐私政策</a>
       </p>
       <p class="site-footer__version">VitePress v{{ vitepressVersion }}</p>
     </div>

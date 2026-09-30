@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { mcTextures, mcTextureAssets, craftingAssetsInlineLimit } from './mc-textures-plugin.mts'
-import { SEO, SITE_INFO, SITE_LINKS, SOCIAL_LINKS } from './theme/config'
+import { LINKS, SEO, SITE_INFO } from './theme/config'
 
 // 「动态」页聚合的文章目录（须与 NewsFeed.vue 的 glob 保持一致）
 const FEED_DIRS = ['blogs', 'events', 'changelog', 'notices']
@@ -155,8 +155,8 @@ export default defineConfig({
       {
         text: '🗂️ 工具与下载',
         items: [
-          // 存档下载改走外链（mc.molean.com），链接统一在 theme/config/siteLinks.ts
-          { text: '🌐 岛屿存档下载', link: SITE_LINKS.saveDownloadUrl },
+          // 存档下载改走外链（mc.molean.com），链接统一在 theme/config/links.ts
+          { text: '🌐 岛屿存档下载', link: LINKS.saveDownloadUrl },
           // 以下入口暂时从导航隐藏，恢复时取消注释即可
           // { text: '作品墙', link: '/resources/works' },
           // { text: '合影墙', link: '/resources/photos' },
@@ -165,7 +165,7 @@ export default defineConfig({
           { text: '🍲 合成配方查询', link: '/crafting' }
         ]
       },
-      { text: '💬 提交反馈', link: SITE_LINKS.feedbackUrl },
+      { text: '💬 提交反馈', link: LINKS.feedbackUrl },
       { text: '🏝 关于', link: '/about' }
     ],
 
@@ -179,8 +179,8 @@ export default defineConfig({
       }
     ],
 
-    // navbar 右侧媒体链接：与首页 SocialLinks.vue 共用 theme/config/socialLinks.ts 数据源
-    socialLinks: SOCIAL_LINKS.map((l) => ({
+    // navbar 右侧媒体链接：与首页 SocialLinks.vue 共用 theme/config/links.ts 的 socials
+    socialLinks: LINKS.socials.map((l) => ({
       icon: socialIcon(l.icon),
       link: l.href,
       ariaLabel: l.name
