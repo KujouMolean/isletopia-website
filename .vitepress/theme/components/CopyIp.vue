@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref } from 'vue'
+import { SITE_INFO } from '../config'
 
-// —— 服务器 IP（唯一调整处）——
-const SERVER_IP = 'play.molean.com'
+// 服务器 IP 数据在 theme/config/siteInfo.ts
+const SERVER_IP = SITE_INFO.serverIp
 
 const copied = ref(false)
 let timer: number | undefined

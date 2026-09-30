@@ -16,7 +16,17 @@ export interface SocialLink {
 
 export const SOCIAL_LINKS: SocialLink[] = [
   { icon: 'qq', name: 'QQ群', href: '/join-us', external: false },
-  { icon: 'bilibili', name: 'b站', href: 'https://space.bilibili.com/3546572702878559', external: true },
+  {
+    icon: 'bilibili',
+    name: 'b站',
+    href: 'https://space.bilibili.com/3546572702878559',
+    external: true
+  },
   { icon: 'tiktok', name: '抖音', href: 'https://v.douyin.com/6IAzNtm8BEU/', external: true },
-  { icon: 'xiaohongshu', name: '小红书', href: 'https://www.xiaohongshu.com/user/profile/67179c78000000001e001449', external: true }
+  {
+    icon: 'xiaohongshu',
+    name: '小红书',
+    href: 'https://www.xiaohongshu.com/user/profile/67179c78000000001e001449',
+    external: true
+  }
 ]

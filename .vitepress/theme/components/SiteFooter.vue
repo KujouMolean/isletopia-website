@@ -3,12 +3,11 @@ import { computed, nextTick, onMounted, watch } from 'vue'
 // 构建时内联当前 vitepress 版本号
 import { version as vitepressVersion } from 'vitepress/package.json'
 import { useRoute } from 'vitepress'
+import { SITE_INFO, SITE_LINKS, SOCIAL_LINKS } from '../config'
 
-// —— 待替换的文案与数据 ——
-// TODO: 正式标语
-const SLOGAN = ''
-// 服务器开始运行时间（YYYY-MM-DD）；null = 未设置，显示占位
-const SERVER_START = '2015-07-11'
+// —— 站点文案与数据（theme/config/siteInfo.ts、siteLinks.ts）——
+const SLOGAN = SITE_INFO.slogan
+const SERVER_START = SITE_INFO.serverStartDate
 
 // —— 不蒜子访问统计（累计 / 访客数）——
 // 模块导入时会自动 fetch 一次，但那时页脚尚未挂载、拿不到元素，
@@ -46,15 +45,17 @@ const uptime = computed(() => {
   return `${years} 年 ${months} 月 ${days} 天`
 })
 
-const relatedLinks = [
-  { text: 'Minecraft官网', href: 'https://www.minecraft.net/zh-hans' },
-  { text: 'Minecraft Wiki（中文）', href: 'https://zh.minecraft.wiki/' },
-  { text: 'MODMC服务器列表详情页', href: 'https://play.mcmod.cn/sv20187897.html' },
-  { text: '苦力怕论坛宣传贴', href: 'https://klpbbs.com/thread-132596-1-1.html' },
-  { text: 'NameMC详情页', href: 'https://namemc.com/server/play.molean.com' },
-  { text: 'B站', href: 'https://space.bilibili.com/3546572702878559' },
-  { text: '抖音', href: 'https://v.douyin.com/6IAzNtm8BEU/' },
-  { text: '小红书', href: 'https://www.xiaohongshu.com/user/profile/67179c78000000001e001449' }
+// 版权年份动态取当前年，避免每年手改
+const copyrightYear = new Date().getFullYear()
+
+// 相关链接：外部站点取自 siteLinks.ts，自有媒体平台直接引用 SOCIAL_LINKS（避免 URL 重复维护）
+const relatedLinks: { text: string; href: string }[] = [
+  { text: 'Minecraft官网', href: SITE_LINKS.minecraftSite },
+  { text: 'Minecraft Wiki（中文）', href: SITE_LINKS.minecraftWiki },
+  { text: 'MODMC服务器列表详情页', href: SITE_LINKS.mcmodPage },
+  { text: '苦力怕论坛宣传贴', href: SITE_LINKS.klpbbsThread },
+  { text: 'NameMC详情页', href: SITE_LINKS.nameMcServer },
+  ...SOCIAL_LINKS.filter((l) => l.external).map((l) => ({ text: l.name, href: l.href }))
 ]
 
 // 均分两列，各自独立成列
@@ -67,8 +68,8 @@ const linkColumns = [relatedLinks.slice(0, mid), relatedLinks.slice(mid)]
     <div class="site-footer__top">
       <!-- 左：LOGO + 标题 + 标语 -->
       <div class="site-footer__brand">
-        <img src="/logo.png" class="site-footer__logo" alt="梦幻之屿 LOGO" />
-        <p class="site-footer__title">梦幻之屿</p>
+        <img :src="SITE_INFO.logo" class="site-footer__logo" :alt="`${SITE_INFO.name} LOGO`" />
+        <p class="site-footer__title">{{ SITE_INFO.name }}</p>
         <p class="site-footer__slogan">{{ SLOGAN }}</p>
       </div>
 
@@ -93,21 +94,21 @@ const linkColumns = [relatedLinks.slice(0, mid), relatedLinks.slice(mid)]
       <p class="site-footer__line">
         本站累计访问共<span id="busuanzi_value_site_pv">...</span>次，访客共<span id="busuanzi_value_site_uv">...</span>人
         <span class="site-footer__divider">|</span>
-        梦幻之屿服务器已运行 {{ uptime }}
+        {{ SITE_INFO.name }}服务器已运行 {{ uptime }}
       </p>
       <p class="site-footer__line">
-        © 2026 梦幻之屿 © All Rights Reserved.
+        © {{ copyrightYear }} {{ SITE_INFO.copyrightHolder }} © All Rights Reserved.
         <span class="site-footer__divider">|</span>
         Not an official Minecraft website. We are not associated with Mojang or Microsoft.
       </p>
       <p class="site-footer__line">
-        <a href="/legal/disclaimer">免责声明</a>
+        <a :href="SITE_LINKS.legalPages.disclaimer">免责声明</a>
         <span class="site-footer__divider">|</span>
-        <a href="/legal/copyright">版权声明</a>
+        <a :href="SITE_LINKS.legalPages.copyright">版权声明</a>
         <span class="site-footer__divider">|</span>
-        <a href="/legal/cookie-policy">Cookie 政策</a>
+        <a :href="SITE_LINKS.legalPages.cookiePolicy">Cookie 政策</a>
         <span class="site-footer__divider">|</span>
-        <a href="/legal/privacy-policy">隐私政策</a>
+        <a :href="SITE_LINKS.legalPages.privacyPolicy">隐私政策</a>
       </p>
       <p class="site-footer__version">VitePress v{{ vitepressVersion }}</p>
     </div>

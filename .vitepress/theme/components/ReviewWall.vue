@@ -3,6 +3,7 @@ import { computed } from 'vue'
 // 构建期由 Vite 直接读盘打包，重新爬取后自动生效
 // @ts-ignore -- ?raw 导入无类型声明
 import rawReviews from '../../../scripts/scrape-reviews/reviews.json?raw'
+import { SITE_LINKS } from '../config'
 
 interface Review {
   author: string
@@ -116,7 +117,7 @@ const rows = computed(() => {
       <p class="review-wall__source">
         评论数据来源于：
         <a
-          href="https://play.mcmod.cn/sv20187897.html"
+          :href="SITE_LINKS.mcmodPage"
           target="_blank"
           rel="noopener"
           >MCMOD 服务器详情页</a

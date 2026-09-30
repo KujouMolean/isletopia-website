@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { VPButton } from 'vitepress/theme'
+import { SITE_INFO } from '../config'
 
-// —— QQ 一键加群链接（唯一调整处）——
-const QQ_GROUP_URL = 'https://qm.qq.com/q/Ps0olZKRMe'
+// QQ 一键加群链接数据在 theme/config/siteInfo.ts
+const QQ_GROUP_URL = SITE_INFO.qqGroup.joinUrl
 </script>
 
 <template>

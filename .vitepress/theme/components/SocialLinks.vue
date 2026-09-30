@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { SOCIAL_LINKS } from '../utils/socialLinks'
+import { SOCIAL_LINKS } from '../config'
 
-// —— 社交平台链接：数据在 theme/utils/socialLinks.ts（与 navbar 右侧共用唯一来源）——
+// —— 社交平台链接：数据在 theme/config/socialLinks.ts（与 navbar 右侧共用唯一来源）——
 const links = SOCIAL_LINKS.map((l) => ({ ...l, icon: `/icons/${l.icon}.svg` }))
 </script>
 

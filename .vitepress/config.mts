@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { mcTextures, mcTextureAssets, craftingAssetsInlineLimit } from './mc-textures-plugin.mts'
-import { SOCIAL_LINKS } from './theme/utils/socialLinks'
+import { SEO, SITE_INFO, SITE_LINKS, SOCIAL_LINKS } from './theme/config'
 
 // 「动态」页聚合的文章目录（须与 NewsFeed.vue 的 glob 保持一致）
 const FEED_DIRS = ['blogs', 'events', 'changelog', 'notices']
@@ -49,9 +49,13 @@ function getFeedLastUpdatedMap(): Map<string, number> {
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "梦幻之屿",
-  description: "MC梦幻之屿官方网站",
-  lang: 'zh-CN',
+  // 站点基本信息取自 theme/config/siteInfo.ts
+  title: SITE_INFO.name,
+  description: SITE_INFO.description,
+  lang: SITE_INFO.lang,
+  sitemap: { hostname: SEO.hostname },
+  // 仓库 README.md 是给 GitHub 看的说明，不作为站点页面构建/收录
+  srcExclude: ['README.md'],
   // 合成表页面（/crafting）的物品贴图虚拟模块与资产规则，见 mc-textures-plugin.mts
   vite: {
     plugins: [mcTextures()],
@@ -63,7 +67,8 @@ export default defineConfig({
     }
   },
   head: [
-    ['link', { rel: 'icon', type: 'image/png', href: '/favicon.png' }],
+    ['link', { rel: 'icon', type: 'image/png', href: SITE_INFO.favicon }],
+    ['meta', { name: 'keywords', content: SEO.keywords.join(', ') }],
     // 正文字体：思源黑体（Noto Sans SC），走国内 CDN（Google Fonts 镜像）加速
     ['link', { rel: 'preconnect', href: 'https://fonts.loli.net', crossorigin: '' }],
     ['link', { rel: 'preconnect', href: 'https://gstatic.loli.net', crossorigin: '' }],
@@ -76,25 +81,48 @@ export default defineConfig({
     ]
   ],
   transformPageData(pageData) {
-    // 为「动态」文章注入 git 最后提交时间（frontmatter.lastUpdated），供 ArticleMeta 显示「最后修改时间」
     const fp = pageData.filePath
-    if (fp && FEED_DIRS.some((d) => fp.startsWith(`${d}/`))) {
+    const frontmatter = { ...pageData.frontmatter }
+
+    // 为「动态」文章注入 git 最后提交时间（frontmatter.lastUpdated），供 ArticleMeta 显示「最后修改时间」
+    const isFeedArticle = !!fp && FEED_DIRS.some((d) => fp.startsWith(`${d}/`))
+    if (isFeedArticle) {
       const ts = getFeedLastUpdatedMap().get(fp)
       if (ts) {
         const d = new Date(ts * 1000)
-        return {
-          frontmatter: {
-            ...pageData.frontmatter,
-            lastUpdated: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-          }
-        }
+        frontmatter.lastUpdated = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
       }
     }
-    return pageData
+
+    // —— SEO：每页注入 canonical / og:* / twitter:*（设置见 theme/config/seo.ts）——
+    // URL 与 sitemap 产物一致（cleanUrls 未开启 → 带 .html）：index.md → /，blogs/foo.md → /blogs/foo.html
+    const pagePath = pageData.relativePath
+      .replace(/(^|\/)index\.md$/, '/')
+      .replace(/\.md$/, '.html')
+    const pageUrl = pagePath === '/' ? `${SEO.hostname}/` : `${SEO.hostname}/${pagePath}`
+    frontmatter.head ??= []
+    frontmatter.head.push(
+      ['link', { rel: 'canonical', href: pageUrl }],
+      ['meta', { property: 'og:url', content: pageUrl }],
+      ['meta', { property: 'og:site_name', content: SITE_INFO.name }],
+      ['meta', { property: 'og:title', content: pageData.title || SITE_INFO.name }],
+      [
+        'meta',
+        {
+          property: 'og:description',
+          content: (typeof frontmatter.description === 'string' && frontmatter.description) || SITE_INFO.description
+        }
+      ],
+      ['meta', { property: 'og:type', content: isFeedArticle ? 'article' : 'website' }],
+      ['meta', { property: 'og:image', content: `${SEO.hostname}${SEO.defaultOgImage}` }],
+      ['meta', { name: 'twitter:card', content: SEO.twitterCard }]
+    )
+
+    return { frontmatter }
   },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
-    logo: '/logo.png',
+    logo: SITE_INFO.logo,
     // 默认主题内置文案（本版本无 locale 选项，逐个指定中文）
     navMenuLabel: '主导航',
     sidebarMenuLabel: '目录',
@@ -127,8 +155,8 @@ export default defineConfig({
       {
         text: '🗂️ 工具与下载',
         items: [
-          // 存档下载改走外链（mc.molean.com）
-          { text: '🌐 岛屿存档下载', link: 'https://mc.molean.com/web/save-download/index.html' },
+          // 存档下载改走外链（mc.molean.com），链接统一在 theme/config/siteLinks.ts
+          { text: '🌐 岛屿存档下载', link: SITE_LINKS.saveDownloadUrl },
           // 以下入口暂时从导航隐藏，恢复时取消注释即可
           // { text: '作品墙', link: '/resources/works' },
           // { text: '合影墙', link: '/resources/photos' },
@@ -137,7 +165,7 @@ export default defineConfig({
           { text: '🍲 合成配方查询', link: '/crafting' }
         ]
       },
-      { text: '💬 提交反馈', link: 'https://txc.qq.com/products/414594' },
+      { text: '💬 提交反馈', link: SITE_LINKS.feedbackUrl },
       { text: '🏝 关于', link: '/about' }
     ],
 
@@ -151,7 +179,7 @@ export default defineConfig({
       }
     ],
 
-    // navbar 右侧媒体链接：与首页 SocialLinks.vue 共用 theme/utils/socialLinks.ts 数据源
+    // navbar 右侧媒体链接：与首页 SocialLinks.vue 共用 theme/config/socialLinks.ts 数据源
     socialLinks: SOCIAL_LINKS.map((l) => ({
       icon: socialIcon(l.icon),
       link: l.href,

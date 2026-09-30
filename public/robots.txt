@@ -1,0 +1,5 @@
+# 允许所有搜索引擎抓取；sitemap 由 VitePress 构建自动生成
+User-agent: *
+Allow: /
+
+Sitemap: https://menghuanzhiyu.com/sitemap.xml
