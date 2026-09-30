@@ -1,14 +1,22 @@
 import { defineConfig } from 'vitepress'
 import { execSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { mcTextures, mcTextureAssets, craftingAssetsInlineLimit } from './mc-textures-plugin.mts'
+import { SOCIAL_LINKS } from './theme/utils/socialLinks'
 
 // 「动态」页聚合的文章目录（须与 NewsFeed.vue 的 glob 保持一致）
 const FEED_DIRS = ['blogs', 'events', 'changelog', 'notices']
 
 // —— 文章「最后修改时间」：取自 md 文件的 git 最后提交时间，无需手工维护 frontmatter ——
 const repoRoot = path.resolve(fileURLToPath(new URL('..', import.meta.url)))
+
+// navbar 右侧社交图标：直接读 public/icons 的单色 SVG（与首页 SocialLinks.vue 同一来源），
+// VPIcon 会以 currentColor 填充，明暗主题自动跟随
+const socialIcon = (name: string): { svg: string } => ({
+  svg: readFileSync(path.resolve(repoRoot, `public/icons/${name}.svg`), 'utf8')
+})
 
 // 「<文章相对路径> -> 最后提交时间戳(秒)」映射，每次构建/开发会话只计算一次
 let feedLastUpdatedMap: Map<string, number> | null = null
@@ -143,8 +151,11 @@ export default defineConfig({
       }
     ],
 
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
-    ]
+    // navbar 右侧媒体链接：与首页 SocialLinks.vue 共用 theme/utils/socialLinks.ts 数据源
+    socialLinks: SOCIAL_LINKS.map((l) => ({
+      icon: socialIcon(l.icon),
+      link: l.href,
+      ariaLabel: l.name
+    }))
   }
 })

@@ -1,11 +1,8 @@
 <script setup lang="ts">
-// —— 社交平台链接（唯一调整处）——
-const links = [
-  { name: 'QQ群', icon: '/icons/qq.svg', href: '/join-us', external: false },
-  { name: 'b站', icon: '/icons/bilibili.svg', href: 'https://space.bilibili.com/3546572702878559', external: true },
-  { name: '抖音', icon: '/icons/tiktok.svg', href: 'https://v.douyin.com/6IAzNtm8BEU/', external: true },
-  { name: '小红书', icon: '/icons/xiaohongshu.svg', href: 'https://www.xiaohongshu.com/user/profile/67179c78000000001e001449', external: true }
-]
+import { SOCIAL_LINKS } from '../utils/socialLinks'
+
+// —— 社交平台链接：数据在 theme/utils/socialLinks.ts（与 navbar 右侧共用唯一来源）——
+const links = SOCIAL_LINKS.map((l) => ({ ...l, icon: `/icons/${l.icon}.svg` }))
 </script>
 
 <template>
