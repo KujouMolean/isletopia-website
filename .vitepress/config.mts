@@ -103,32 +103,34 @@ export default defineConfig({
     outline: { level: 'deep', label: '本页概览' },
     docFooter: { prev: false, next: false },
     nav: [
-      { text: '首页', link: '/' },
-      { text: '最新动态', link: '/update' },
+      { text: '🏠 首页', link: '/' },
+      { text: '📰 最新动态', link: '/update' },
       {
-        text: '游玩指南',
+        text: '🧭 游玩指南',
         items: [
-          { text: '服务器简介', link: '/guide/intro' },
-          { text: '特色玩法', link: '/guide/features' },
-          { text: '新手教程', link: '/guide/beginner' },
-          { text: '常见问题(FAQ)', link: '/guide/faq' },
-          { text: 'Wiki', link: '/guide/wiki' },
-          { text: '规则', link: '/guide/rules' }
+          { text: '🏝 服务器简介', link: '/guide/intro' },
+          { text: '⭐ 特色玩法', link: '/guide/features' },
+          { text: '📕 新手教程', link: '/guide/beginner' },
+          { text: '🤔 常见问题(FAQ)', link: '/guide/faq' },
+          { text: '📚 Wiki', link: '/guide/wiki' },
+          { text: '📃 规则', link: '/guide/rules' }
         ]
       },
       {
-        text: '资源与下载',
+        text: '🗂️ 工具与下载',
         items: [
-          { text: '岛屿存档下载', link: '/resources/saves' },
-          { text: '作品墙', link: '/resources/works' },
-          { text: '合影墙', link: '/resources/photos' },
-          { text: '服务器图库', link: '/resources/gallery' },
-          { text: '活动Replay回放', link: '/resources/replays' },
-          { text: '合成配方查询', link: '/crafting' }
+          // 存档下载改走外链（mc.molean.com）
+          { text: '🌐 岛屿存档下载', link: 'https://mc.molean.com/web/save-download/index.html' },
+          // 以下入口暂时从导航隐藏，恢复时取消注释即可
+          // { text: '作品墙', link: '/resources/works' },
+          // { text: '合影墙', link: '/resources/photos' },
+          // { text: '服务器图库', link: '/resources/gallery' },
+          // { text: '活动Replay回放', link: '/resources/replays' },
+          { text: '🍲 合成配方查询', link: '/crafting' }
         ]
       },
-      { text: '提交反馈', link: 'https://txc.qq.com/products/414594' },
-      { text: '关于', link: '/about' }
+      { text: '💬 提交反馈', link: 'https://txc.qq.com/products/414594' },
+      { text: '🏝 关于', link: '/about' }
     ],
 
     sidebar: [
