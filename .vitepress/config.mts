@@ -152,6 +152,7 @@ export default defineConfig({
           { text: '👹 惊变空岛100天', link: '/guide/invade' },
           { text: '💀 极限生存挑战', link: '/guide/hardcore' },
           { text: '📕 新手教程', link: '/guide/beginner' },
+          { text: '🙂 玩家系统', link: '/guide/wiki/player' },
           { text: '📚 Wiki', link: '/guide/wiki' },
           { text: '🎮 小游戏 Wiki', link: '/guide/minigames' },
           { text: '📃 规则', link: '/guide/rules' }
