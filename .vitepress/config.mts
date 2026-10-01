@@ -146,8 +146,14 @@ export default defineConfig({
         items: [
           { text: '🏝 服务器简介', link: '/guide/intro' },
           { text: '⭐ 特色玩法', link: '/guide/features' },
+          { text: '🌴 岛屿类型', link: '/guide/islands/' },
+          { text: '🧩 特性机制', link: '/guide/mechanics/' },
+          { text: '💰 经济系统', link: '/guide/economy' },
+          { text: '👹 惊变空岛100天', link: '/guide/invade' },
+          { text: '💀 极限生存挑战', link: '/guide/hardcore' },
           { text: '📕 新手教程', link: '/guide/beginner' },
           { text: '📚 Wiki', link: '/guide/wiki' },
+          { text: '🎮 小游戏 Wiki', link: '/guide/minigames' },
           { text: '📃 规则', link: '/guide/rules' }
         ]
       },
