@@ -9,8 +9,8 @@ const containerRef = ref<HTMLElement | null>(null)
 const isInserted = ref(false)
 const isExpanded = ref(false)
 
-// 标准元数据字段列表（lastUpdated 由构建时 transformPageData 注入）
-const standardFields = ['title', 'date', 'time', 'lastUpdated', 'hide', 'tags', 'author', 'sidebar', 'aliases', 'description', 'category', 'layout']
+// 标准元数据字段列表（lastUpdated、head 由构建时 transformPageData 注入，head 仅供 VitePress 注入 <head>，不展示）
+const standardFields = ['title', 'date', 'time', 'lastUpdated', 'hide', 'tags', 'author', 'sidebar', 'aliases', 'description', 'category', 'layout', 'head']
 
 // 获取自定义元数据字段（非标准字段）
 const customFields = computed(() => {
