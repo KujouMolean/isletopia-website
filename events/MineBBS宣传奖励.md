@@ -1,7 +1,7 @@
 ---
 title: MineBBS宣传奖励（打赏服务器得海洋之心）
 date: 2026-09-13
-hide: false
+hide: true
 tags:
   - 标签1
   - 标签2
@@ -9,12 +9,9 @@ tags:
 author:
   - 梦幻之屿管理组
 sidebar: false
-aliases:
-description: 
 category: events
 layout: doc
 ---
-
 # MineBBS宣传奖励（打赏服务器得海洋之心）
 
 帖子地址：[https://www.minebbs.com/threads/23946/](https://txc.qq.com/products/414594/link-jump?jump=https%3A%2F%2Fwww.minebbs.com%2Fthreads%2F23946%2F)
@@ -42,3 +39,4 @@ layout: doc
 2.必须设置头像、并在个人简介中填写自己的ID后才能领取奖励
 
 ![2f8cd42ba338577fbe155de1e7d12007.png](/images/2f8cd42ba338577fbe155de1e7d12007.png)
+
