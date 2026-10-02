@@ -9,15 +9,39 @@ const PRESET_ICON: Record<BannerType, string> = {
   err: '🚨'
 }
 
-// ✕ 关闭仅在当前访问内有效(纯内存,不持久化):SPA 切页不再显示,刷新页面后重新弹出
+// —— 「关闭且不再提醒」——
+// 关闭状态按横幅 id 持久保存在 localStorage,跨访问与刷新生效;
+// 需要重新提醒某条横幅时,更换其 id 即可(见 config/banner.ts)。
+// 首帧(含 SSG 预渲染)统一不渲染横幅,onMounted 读完存储后再显示:
+// 既避免水合不一致,也让已关闭的用户不会看到横幅闪现。
+const DISMISSED_STORAGE_KEY = 'site-banners:dismissed'
+
 const dismissed = ref<Set<string>>(new Set())
+const ready = ref(false)
 
 const visibleBanners = computed(() =>
   BANNERS.filter((b) => b.enabled !== false && !dismissed.value.has(b.id))
 )
 
+function loadDismissed(): Set<string> {
+  try {
+    const raw = localStorage.getItem(DISMISSED_STORAGE_KEY)
+    const list: unknown = raw ? JSON.parse(raw) : []
+    return Array.isArray(list)
+      ? new Set(list.filter((id): id is string => typeof id === 'string'))
+      : new Set()
+  } catch {
+    return new Set()
+  }
+}
+
 function dismiss(id: string) {
   dismissed.value = new Set(dismissed.value).add(id)
+  try {
+    localStorage.setItem(DISMISSED_STORAGE_KEY, JSON.stringify([...dismissed.value]))
+  } catch {
+    // 写入失败(如隐私模式)时降级为本次访问内有效
+  }
 }
 
 // —— 高度补偿 ——
@@ -33,6 +57,8 @@ function syncHeight() {
 }
 
 onMounted(() => {
+  dismissed.value = loadDismissed()
+  ready.value = true
   syncHeight()
   observer = new ResizeObserver(syncHeight)
   if (el.value) observer.observe(el.value)
@@ -46,27 +72,23 @@ onBeforeUnmount(() => {
 
 <template>
   <div ref="el" class="site-banner-stack" role="region" aria-label="站点公告">
-    <div v-for="b in visibleBanners" :key="b.id" class="site-banner" :class="`is-${b.type}`">
-      <div class="content">
-        <p class="title">
-          <span class="icon" aria-hidden="true">{{ b.icon ?? PRESET_ICON[b.type] }}</span>
-          <span>{{ b.title }}</span>
-        </p>
-        <p class="text">
-          {{ b.text }}
-          <a v-if="b.link" class="link" :href="b.link.url">{{ b.link.text ?? '查看详情' }} →</a>
-        </p>
+    <template v-if="ready">
+      <div v-for="b in visibleBanners" :key="b.id" class="site-banner" :class="`is-${b.type}`">
+        <div class="content">
+          <p class="title">
+            <span class="icon" aria-hidden="true">{{ b.icon ?? PRESET_ICON[b.type] }}</span>
+            <span>{{ b.title }}</span>
+          </p>
+          <p class="text">
+            {{ b.text }}
+            <a v-if="b.link" class="link" :href="b.link.url">{{ b.link.text ?? '查看详情' }} →</a>
+          </p>
+        </div>
+        <button v-if="b.dismissible" class="dismiss" type="button" @click="dismiss(b.id)">
+          关闭且不再提醒
+        </button>
       </div>
-      <button
-        v-if="b.dismissible"
-        class="dismiss"
-        type="button"
-        aria-label="关闭此公告"
-        @click="dismiss(b.id)"
-      >
-        ✕
-      </button>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -85,7 +107,8 @@ onBeforeUnmount(() => {
   position: relative;
   display: flex;
   align-items: center;
-  padding: 8px 44px 8px 16px; /* 右侧固定留白给 ✕ 按钮 */
+  gap: 8px 16px;
+  padding: 8px 16px;
   color: var(--vp-c-white);
   font-size: 14px;
   line-height: 1.5;
@@ -107,7 +130,8 @@ onBeforeUnmount(() => {
 }
 
 .content {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   text-align: center;
 }
 
@@ -139,23 +163,18 @@ onBeforeUnmount(() => {
 }
 
 .dismiss {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  padding: 0;
+  flex: none;
+  padding: 4px 8px;
   border: none;
   border-radius: 6px;
   background: transparent;
   color: inherit;
-  font-size: 14px;
+  font-size: 13px;
+  white-space: nowrap;
+  text-decoration: underline;
+  text-underline-offset: 3px;
   cursor: pointer;
-  opacity: 0.75;
+  opacity: 0.8;
 }
 
 .dismiss:hover {
@@ -171,7 +190,7 @@ onBeforeUnmount(() => {
   .site-banner {
     font-size: 13px;
     padding-left: 12px;
-    padding-right: 40px;
+    padding-right: 12px;
   }
 }
 </style>

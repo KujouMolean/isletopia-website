@@ -7,7 +7,7 @@ export type BannerType = 'info' | 'warn' | 'err'
 export interface BannerConfig {
   /** 单条开关(默认 true;临时隐藏不必删除条目) */
   enabled?: boolean
-  /** 唯一标识(v-for key 与 ✕ 关闭的目标);关闭仅本次访问有效,刷新后横幅重新显示 */
+  /** 唯一标识(v-for key 与「关闭且不再提醒」的目标);关闭后按 id 持久生效,需要重新提醒时请更换新的 id */
   id: string
   /** 配色与预设图标:info=品牌色 ℹ️ / warn=警示黄 ⚠️ / err=紧急红 🚨 */
   type: BannerType
@@ -19,7 +19,7 @@ export interface BannerConfig {
   icon?: string
   /** 可选"查看详情"链接:url 必填;text 缺省为「查看详情」,可自定义文案 */
   link?: { text?: string; url: string }
-  /** 是否显示右侧 ✕ 关闭按钮(默认 false) */
+  /** 是否显示「关闭且不再提醒」按钮(默认 false) */
   dismissible?: boolean
 }
 
