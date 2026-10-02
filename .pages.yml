@@ -344,8 +344,8 @@ settings:
   # 发布策略（deploy 分支模式）：
   #   main 为日常集成分支，所有人的提交（含 CMS）都正常进入 main，不做任何
   #   分支保护；Cloudflare Pages 的生产分支指向 deploy，只有把 main 合并到
-  #   deploy 并推送时站点才会发布。CMS 若需要隔离的草稿区，也可在 pagecms
-  #   分支上编辑，定稿后再合回 main。
+  #   deploy 并推送时站点才会发布。CMS 若需要隔离的草稿区，也可单独开分支
+  #   编辑，定稿后再合回 main。
   commit:
     identity: user
     templates:
