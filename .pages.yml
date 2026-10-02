@@ -339,9 +339,16 @@ settings:
   # 这对避免覆盖手动添加的 frontmatter 字段非常重要
   content:
     merge: true
-  # commit: 用编辑者的 GitHub 身份提交，便于追溯
+  # commit:
+  #   identity: app —— 由 Pages CMS 应用身份提交（GitHub 上显示为 Pages CMS 应用）。
+  #   这是「CMS 提交只进 pagecms 分支」的关键：main 的分支保护规则将仓库所有者
+  #   加入 bypass 白名单，而 CMS 应用不在白名单内，CMS 对 main 的直接提交会被
+  #   GitHub 拒绝，只能在 pagecms 分支上编辑。
+  #   代价：git 提交作者显示为 CMS 应用而非编辑者本人（编辑者记录见 Pages CMS
+  #   后台）。改回 user 可恢复编辑者身份提交，但分支保护将无法区分 CMS 提交与
+  #   所有者本人的提交，「禁止 CMS 直提 main」就无法强制执行。
   commit:
-    identity: user
+    identity: app
     templates:
       create: "feat(cms): 新建 {path}"
       update: "update(cms): 更新 {path}"
