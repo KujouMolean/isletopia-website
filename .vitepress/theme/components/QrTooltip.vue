@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { withBase } from 'vitepress'
 import { SITE_INFO } from '../config'
 
 // 二维码图片路径数据在 theme/config/siteInfo.ts
-const qrImage = SITE_INFO.qqGroup.qrImage
+const qrImage = withBase(SITE_INFO.qqGroup.qrImage)
 
 // 悬停 / 聚焦时显示二维码气泡，离开后延迟隐藏，避免鼠标移向气泡时闪烁
 const visible = ref(false)

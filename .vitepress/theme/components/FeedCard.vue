@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { withBase } from 'vitepress'
 import { CATEGORY_LABELS, type Article } from '../utils/articleFeed'
 
 // grid = 4/2 列视图（头图在上），timeline = 时间轴视图（内容在上、图片宫格在下）
@@ -27,7 +28,7 @@ function formatDate(date: string) {
     <div v-if="variant !== 'timeline' && article.cover" class="card__cover">
       <!-- no-referrer：bilibili 等图床按 Referer 防盗链（非 b 站来源 403），不发送 Referer 即可正常加载 -->
       <img
-        :src="article.cover"
+        :src="withBase(article.cover)"
         :alt="article.title"
         loading="lazy"
         referrerpolicy="no-referrer"
@@ -55,7 +56,7 @@ function formatDate(date: string) {
       <img
         v-for="(src, i) in article.images"
         :key="i"
-        :src="src"
+        :src="withBase(src)"
         :alt="article.title"
         loading="lazy"
         referrerpolicy="no-referrer"

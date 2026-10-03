@@ -44,6 +44,9 @@ jobs:
       - name: Build (base=/isletopia-website/)
         run: |
           node --input-type=module -e "const v = await import('vitepress'); await v.build('.', { base: '/isletopia-website/' })"
+        env:
+          # favicon 等 head 配置按此前缀拼接（与上方 base 注入保持一致）
+          VITEPRESS_BASE: /isletopia-website/
 
       - uses: actions/upload-pages-artifact@v3
         with:

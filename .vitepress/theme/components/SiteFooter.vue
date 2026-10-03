@@ -2,7 +2,7 @@
 import { computed, nextTick, onMounted, watch } from 'vue'
 // 构建时内联当前 vitepress 版本号
 import { version as vitepressVersion } from 'vitepress/package.json'
-import { useRoute } from 'vitepress'
+import { useRoute, withBase } from 'vitepress'
 import { LINKS, SITE_INFO } from '../config'
 
 // —— 站点文案与数据（theme/config/）——
@@ -58,7 +58,7 @@ const linkColumns = [LINKS.related.slice(0, mid), LINKS.related.slice(mid)]
     <div class="site-footer__top">
       <!-- 左：LOGO + 标题 + 标语 -->
       <div class="site-footer__brand">
-        <img :src="SITE_INFO.logo" class="site-footer__logo" :alt="`${SITE_INFO.name} LOGO`" />
+        <img :src="withBase(SITE_INFO.logo)" class="site-footer__logo" :alt="`${SITE_INFO.name} LOGO`" />
         <p class="site-footer__title">{{ SITE_INFO.name }}</p>
         <p class="site-footer__slogan">{{ SLOGAN }}</p>
       </div>

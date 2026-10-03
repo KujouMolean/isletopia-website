@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { withBase } from 'vitepress'
 import { LINKS } from '../config'
 
 // —— 媒体平台链接：数据在 theme/config/links.ts 的 socials（与 navbar 右侧共用唯一来源）——
-const links = LINKS.socials.map((l) => ({ ...l, icon: `/icons/${l.icon}.svg` }))
+// withBase：图标路径按部署 base 重写（GH Pages 子路径部署时正确指向 /isletopia-website/icons/）
+const links = LINKS.socials.map((l) => ({ ...l, icon: withBase(`/icons/${l.icon}.svg`) }))
 </script>
 
 <template>

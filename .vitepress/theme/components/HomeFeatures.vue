@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useData } from 'vitepress'
+import { useData, withBase } from 'vitepress'
 
 // 特色玩法卡片，描述文字参考 MC 百科服务器页面（play.mcmod.cn/sv20187897）
 // TODO: 插图为占位图，正式版替换为 public/images/features/ 下的 4 张 PNG 后更新 index.md frontmatter 的 img 路径
@@ -31,7 +31,7 @@ const items = computed<FeatureItem[]>(() => cfg.value?.items ?? [])
       <div class="home-features__grid">
         <article v-for="f in items" :key="f.title" class="home-features__card">
           <img
-            :src="f.img"
+            :src="f.img ? withBase(f.img) : undefined"
             :alt="f.title + ' 玩法插图'"
             class="home-features__image"
             loading="lazy"

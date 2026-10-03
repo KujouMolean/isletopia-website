@@ -67,7 +67,15 @@ export default defineConfig({
     }
   },
   head: [
-    ['link', { rel: 'icon', type: 'image/png', href: SITE_INFO.favicon }],
+    // favicon 走根相对路径,子路径部署(GH Pages)时由 VITEPRESS_BASE 提供前缀,
+    // Cloudflare 根路径部署时该环境变量为空,行为与原先一致;
+    // SITE_INFO.favicon 以 / 开头,base 尾部的斜杠需去掉避免出现 //
+    ['link',
+      {
+        rel: 'icon',
+        type: 'image/png',
+        href: (process.env.VITEPRESS_BASE || '').replace(/\/$/, '') + SITE_INFO.favicon
+      }],
     ['meta', { name: 'keywords', content: SEO.keywords.join(', ') }],
     // 正文字体：思源黑体（Noto Sans SC），走国内 CDN（Google Fonts 镜像）加速
     ['link', { rel: 'preconnect', href: 'https://fonts.loli.net', crossorigin: '' }],
