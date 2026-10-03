@@ -82,7 +82,8 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
         { text: '祈愿池', link: '/wiki/特殊功能/祈愿池' },
         { text: '幸运色', link: '/wiki/特殊功能/幸运色' },
         { text: '挑战任务', link: '/wiki/特殊功能/挑战任务' },
-        { text: '岛屿季节', link: '/wiki/岛屿季节' }
+        { text: '岛屿季节', link: '/wiki/岛屿季节' },
+        { text: '枪械', link: '/wiki/枪械' }
       ]
     },
     {
