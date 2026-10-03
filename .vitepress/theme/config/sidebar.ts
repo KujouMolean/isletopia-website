@@ -94,9 +94,10 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
       ]
     },
     {
-      text: '服务器小游戏 ',
+      text: '服务器小游戏',
       link: '/wiki/服务器小游戏/',
       items: [
+        { text: '通用游玩流程', link: '/wiki/服务器小游戏/通用游玩流程' },
         { text: '掘一死战', link: '/wiki/服务器小游戏/掘一死战' },
         { text: '消失的羊毛', link: '/wiki/服务器小游戏/消失的羊毛' },
         { text: '天天酷跑', link: '/wiki/服务器小游戏/天天酷跑' },
