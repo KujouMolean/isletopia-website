@@ -9,7 +9,7 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
   '/wiki/': [
     { text: 'Wiki 总览', link: '/wiki/' },
     {
-      text: '岛屿类型',
+      text: '岛屿',
       link: '/wiki/空岛类型/',
       items: [
         { text: '经典空岛', link: '/wiki/空岛类型/经典空岛' },
@@ -62,9 +62,23 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
       ]
     },
     {
-      text: '便捷功能',
+      text: '便利功能',
+      link: '/wiki/便利功能/',
       items: [
-        { text: '便利功能', link: '/wiki/便利功能' },
+        { text: '自动铺路', link: '/wiki/便利功能/自动铺路' },
+        { text: '铁电梯', link: '/wiki/便利功能/铁电梯' },
+        { text: '铁路传送', link: '/wiki/便利功能/铁路传送' },
+        { text: '举高高', link: '/wiki/便利功能/举高高' },
+        { text: '时钟菜单', link: '/wiki/便利功能/时钟菜单' },
+        { text: '更多椅子', link: '/wiki/便利功能/更多椅子' },
+        { text: '音乐', link: '/wiki/便利功能/音乐' },
+        { text: '首棵树苗', link: '/wiki/便利功能/首棵树苗' },
+        { text: '信标传送', link: '/wiki/便利功能/信标传送' },
+        { text: '回响扳手', link: '/wiki/便利功能/回响扳手' },
+        { text: '岩浆保护', link: '/wiki/便利功能/岩浆保护' },
+        { text: '安全落点', link: '/wiki/便利功能/安全落点' },
+        { text: '伤害显示', link: '/wiki/便利功能/伤害显示' },
+        { text: '邮箱', link: '/wiki/便利功能/邮箱' },
         { text: '传送牌', link: '/wiki/传送牌' },
         { text: '云仓', link: '/wiki/云仓' },
         { text: '岛屿管理', link: '/wiki/岛屿管理' },
