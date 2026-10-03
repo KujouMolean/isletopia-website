@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { mcTextures, mcTextureAssets, craftingAssetsInlineLimit } from './mc-textures-plugin.mts'
-import { LINKS, SEO, SITE_INFO } from './theme/config'
+import { LINKS, NAV, SEO, SIDEBAR, SITE_INFO } from './theme/config'
 
 // 「动态」页聚合的文章目录（须与 NewsFeed.vue 的 glob 保持一致）
 const FEED_DIRS = ['blogs', 'events', 'changelog', 'notices']
@@ -137,138 +137,9 @@ export default defineConfig({
       linkText: '返回首页'
     },
     outline: { level: 'deep', label: '本页概览' },
-    nav: [
-      { text: '🏠 首页', link: '/' },
-      { text: '📰 最新动态', link: '/update' },
-      {
-        text: '🧭 游玩指南',
-        items: [
-          { text: '🏝 服务器简介', link: '/about' },
-          { text: '⭐ 特色玩法', link: '/beginner/特色玩法' },
-          { text: '📕 新手必看', link: '/beginner/' },
-          { text: '📚 Wiki', link: '/wiki/' },
-          { text: '🤔 常见问题', link: '/faq' },
-          { text: '📃 规则', link: '/beginner/规则' }
-        ]
-      },
-      {
-        text: '🗂️ 资源与工具',
-        items: [
-          // 存档下载改走外链（mc.molean.com），链接统一在 theme/config/links.ts
-          { text: '🌐 岛屿存档下载', link: LINKS.saveDownloadUrl },
-          // 以下入口暂时从导航隐藏，恢复时取消注释即可
-          // { text: '作品墙', link: '/resources/works' },
-          // { text: '合影墙', link: '/resources/photos' },
-          // { text: '服务器图库', link: '/resources/gallery' },
-          // { text: '活动Replay回放', link: '/resources/replays' },
-          { text: '🍲 合成配方查询', link: '/crafting' }
-        ]
-      },
-      { text: '💬 提交反馈', link: LINKS.feedbackUrl },
-      { text: '🏝 关于', link: '/about' }
-    ],
-
-    // 文档侧边栏：beginner 与 wiki 两个目录全量启用；分组默认展开（不设 collapsed），
-    // 其他根级路径（blogs、changelog 等）不匹配任何 key，不受影响
-    sidebar: {
-      '/wiki/': [
-        { text: 'Wiki 总览', link: '/wiki/' },
-        {
-          text: '岛屿类型',
-          link: '/wiki/空岛类型/',
-          items: [
-            { text: '经典空岛', link: '/wiki/空岛类型/经典空岛' },
-            { text: '单方块空岛', link: '/wiki/空岛类型/单方块空岛' },
-            { text: '随机空岛', link: '/wiki/空岛类型/随机空岛' },
-            { text: '九选一空岛', link: '/wiki/空岛类型/九选一空岛' },
-            { text: '钓鱼空岛', link: '/wiki/空岛类型/钓鱼空岛' },
-            { text: '假日海岛', link: '/wiki/空岛类型/假日海岛' },
-            { text: '地底世界', link: '/wiki/空岛类型/地底世界' },
-            { text: '困难空岛', link: '/wiki/空岛类型/困难空岛' },
-            { text: '海底求生', link: '/wiki/空岛类型/海底求生' },
-            { text: '惊变空岛100天', link: '/wiki/空岛类型/惊变空岛100天' },
-            { text: '极限生存挑战', link: '/wiki/空岛类型/极限生存挑战' },
-            { text: '粘液科技空岛', link: '/wiki/空岛类型/粘液科技空岛' },
-            { text: '特殊岛屿', link: '/wiki/空岛类型/特殊岛屿' }
-          ]
-        },
-        {
-          text: '特性机制 · 玩法机制',
-          items: [
-            { text: '单方块', link: '/wiki/单方块' },
-            { text: '九选一', link: '/wiki/九选一' },
-            { text: '钓鱼', link: '/wiki/钓鱼' },
-            { text: '随机方块', link: '/wiki/随机方块' },
-            { text: '假日群岛', link: '/wiki/假日群岛' },
-            { text: '海洋世界', link: '/wiki/海洋世界' },
-            { text: '基因鸡', link: '/wiki/基因鸡' },
-            { text: '粘液科技', link: '/wiki/粘液科技' },
-            { text: '淬炼', link: '/wiki/淬炼' }
-          ]
-        },
-        {
-          text: '特性机制 · 资源与配方',
-          items: [
-            { text: '刷石机出矿', link: '/wiki/刷石机出矿' },
-            { text: '空岛合成配方', link: '/wiki/空岛合成配方' },
-            { text: '李芒果机制', link: '/wiki/李芒果机制' },
-            { text: '特殊生物与掉落', link: '/wiki/特殊生物与掉落' }
-          ]
-        },
-        {
-          text: '特性机制 · 特色系统',
-          items: [
-            { text: '幻形', link: '/wiki/幻形' },
-            { text: '幻形图鉴', link: '/wiki/幻形图鉴' },
-            { text: '幽匿侵蚀', link: '/wiki/幽匿侵蚀' },
-            { text: '祈愿池', link: '/wiki/祈愿池' },
-            { text: '幸运色', link: '/wiki/幸运色' },
-            { text: '挑战任务', link: '/wiki/挑战任务' }
-          ]
-        },
-        {
-          text: '特性机制 · 通用功能',
-          items: [
-            { text: '便利功能', link: '/wiki/便利功能' },
-            { text: '传送牌', link: '/wiki/传送牌' },
-            { text: '云仓', link: '/wiki/云仓' },
-            { text: '岛屿管理', link: '/wiki/岛屿管理' },
-            { text: '岛屿开关', link: '/wiki/岛屿开关' }
-          ]
-        },
-        {
-          text: '系统与社区',
-          items: [
-            { text: '岛屿系统', link: '/wiki/岛屿系统' },
-            { text: '玩家系统', link: '/wiki/玩家系统' },
-            { text: '经济系统', link: '/wiki/经济系统' },
-            { text: '游戏内小游戏', link: '/wiki/游戏内小游戏' }
-          ]
-        },
-        {
-          text: 'QQ 机器人',
-          items: [{ text: 'QQ 机器人绑定', link: '/wiki/QQ机器人绑定' }]
-        },
-        {
-          text: '群内小游戏',
-          items: [
-            { text: '每日签到', link: '/wiki/群内小游戏/每日签到' },
-            { text: '挖矿', link: '/wiki/群内小游戏/挖矿' },
-            { text: '钓鱼', link: '/wiki/群内小游戏/钓鱼' },
-            { text: '农场', link: '/wiki/群内小游戏/农场' },
-            { text: '模拟炒股', link: '/wiki/群内小游戏/模拟炒股' }
-          ]
-        }
-      ],
-      '/beginner/': [
-        { text: '新手必看', link: '/beginner/' },
-        { text: '入服教程', link: '/beginner/入服教程' },
-        { text: '部分物资获取', link: '/beginner/部分物资获取' },
-        { text: '推荐下载的模组安装使用', link: '/beginner/推荐下载的模组安装使用' },
-        { text: '特色玩法', link: '/beginner/特色玩法' },
-        { text: '规则', link: '/beginner/规则' }
-      ]
-    },
+    // 导航栏与文档侧边栏分别维护在 theme/config/nav.ts、theme/config/sidebar.ts（唯一数据源）
+    nav: NAV,
+    sidebar: SIDEBAR,
 
     // navbar 右侧媒体链接：与首页 SocialLinks.vue 共用 theme/config/links.ts 的 socials
     socialLinks: LINKS.socials.map((l) => ({
