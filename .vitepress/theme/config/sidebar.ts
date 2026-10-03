@@ -90,17 +90,37 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
       items: [
         { text: '岛屿系统', link: '/wiki/岛屿系统' },
         { text: '玩家系统', link: '/wiki/玩家系统' },
-        { text: '经济系统', link: '/wiki/经济系统' },
-        { text: '游戏内小游戏', link: '/wiki/游戏内小游戏' }
+        { text: '经济系统', link: '/wiki/经济系统' }
       ]
     },
     {
-      text: 'QQ 机器人',
-      items: [{ text: 'QQ 机器人绑定', link: '/wiki/QQ机器人绑定' }]
+      text: '服务器小游戏 ',
+      link: '/wiki/服务器小游戏/',
+      items: [
+        { text: '掘一死战', link: '/wiki/服务器小游戏/掘一死战' },
+        { text: '消失的羊毛', link: '/wiki/服务器小游戏/消失的羊毛' },
+        { text: '天天酷跑', link: '/wiki/服务器小游戏/天天酷跑' },
+        { text: '颜色匹配', link: '/wiki/服务器小游戏/颜色匹配' },
+        { text: '烫手山芋', link: '/wiki/服务器小游戏/烫手山芋' },
+        { text: '击击棒', link: '/wiki/服务器小游戏/击击棒' },
+        { text: '射箭', link: '/wiki/服务器小游戏/射箭' },
+        { text: '扫雷', link: '/wiki/服务器小游戏/扫雷' },
+        { text: '彩色跑酷', link: '/wiki/服务器小游戏/彩色跑酷' },
+        { text: '红绿灯', link: '/wiki/服务器小游戏/红绿灯' },
+        { text: '黄金矿工', link: '/wiki/服务器小游戏/黄金矿工' },
+        { text: '剪羊毛', link: '/wiki/服务器小游戏/剪羊毛' },
+        { text: '山丘之王', link: '/wiki/服务器小游戏/山丘之王' },
+        { text: '泼洒颜料！', link: '/wiki/服务器小游戏/泼洒颜料' },
+        { text: '炸弹人', link: '/wiki/服务器小游戏/炸弹人' },
+        { text: '起床战争', link: '/wiki/服务器小游戏/起床战争' },
+        { text: '梦战（IsletWars）', link: '/wiki/服务器小游戏/梦战' },
+        { text: '骑马与砍杀', link: '/wiki/服务器小游戏/骑马与砍杀' }
+      ]
     },
     {
-      text: '群内小游戏',
+      text: 'QQ群功能',
       items: [
+        { text: 'QQ 机器人绑定', link: '/wiki/QQ机器人绑定' },
         { text: '每日签到', link: '/wiki/群内小游戏/每日签到' },
         { text: '挖矿', link: '/wiki/群内小游戏/挖矿' },
         { text: '钓鱼', link: '/wiki/群内小游戏/钓鱼' },
