@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useData, withBase } from 'vitepress'
+import { useData } from 'vitepress'
 
 interface IntroConfig {
   title: string
@@ -28,7 +28,7 @@ const cfg = computed<IntroConfig | null>(() => frontmatter.value.intro ?? null)
       </div>
       <!-- TODO: 素材待提供，放 public/images/home-intro.jpg（透明底、不规则边缘渲染图） -->
       <img
-        :src="cfg.image ? withBase(cfg.image) : undefined"
+        :src="cfg.image"
         alt="梦幻之屿岛屿效果图"
         class="home-intro__image"
         loading="lazy"
