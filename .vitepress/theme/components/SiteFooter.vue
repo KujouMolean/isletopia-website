@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 // 构建时内联当前 vitepress 版本号
 import { version as vitepressVersion } from 'vitepress/package.json'
 import { useRoute } from 'vitepress'
@@ -51,10 +51,36 @@ const copyrightYear = new Date().getFullYear()
 // 相关链接内容在 theme/config/links.ts 的 related，此处只做视图切分：均分两列，各自独立成列
 const mid = Math.ceil(LINKS.related.length / 2)
 const linkColumns = [LINKS.related.slice(0, mid), LINKS.related.slice(mid)]
+
+// —— 固定层让位：页脚上滑进入视口时，把自身可见高度写入 CSS 变量 ——
+// VPSidebar 与 VPDoc 的 aside-container 都是 fixed 全高常驻，页脚上滑会盖住
+// 菜单末尾的选项。两个固定层消费 --vp-footer-visible 收缩自身底边，使菜单
+// 底边始终贴在页脚上缘（见 style.css「固定层让位」一节）。rAF 节流滚动监听。
+const footerEl = ref<HTMLElement | null>(null)
+let footerRaf = 0
+const syncFooterVisible = () => {
+  footerRaf = 0
+  if (!footerEl.value || typeof window === 'undefined') return
+  const visible = Math.max(0, window.innerHeight - footerEl.value.getBoundingClientRect().top)
+  document.documentElement.style.setProperty('--vp-footer-visible', `${visible}px`)
+}
+const queueFooterSync = () => {
+  if (!footerRaf) footerRaf = requestAnimationFrame(syncFooterVisible)
+}
+onMounted(() => {
+  syncFooterVisible()
+  window.addEventListener('scroll', queueFooterSync, { passive: true })
+  window.addEventListener('resize', queueFooterSync)
+})
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', queueFooterSync)
+  window.removeEventListener('resize', queueFooterSync)
+  if (footerRaf) cancelAnimationFrame(footerRaf)
+})
 </script>
 
 <template>
-  <footer class="site-footer">
+  <footer ref="footerEl" class="site-footer">
     <div class="site-footer__top">
       <!-- 左：LOGO + 标题 + 标语 -->
       <div class="site-footer__brand">

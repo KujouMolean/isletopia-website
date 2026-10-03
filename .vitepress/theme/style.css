@@ -407,3 +407,34 @@ html.home-over-video .VPNav:has(.VPNavBar.home) .VPNavScreen {
 html.home-over-video .VPNavAppearance .icon [class^='vpi-'] {
   color: var(--vp-c-neutral);
 }
+
+/* ========== 页脚置顶：滚到页底时盖过固定的 sidebar 与右侧大纲 ========== */
+/* 本版本 layout-bottom 渲染在 .Layout 根下、VPContent 兄弟位置，页脚全宽；
+   桌面端（≥60rem）sidebar 的 z-index 降为 25，而 --vp-z-index-footer 默认 10，
+   页脚左半被 sidebar 压住、右半压住常驻的 aside-container（无 z-index，DOM 靠后）。
+   页脚背景本就是不透明的 --vp-c-bg，这里只需在桌面端把 footer 层提到 sidebar 之上：
+   26 = sidebar 25 + 1，仍低于移动端抽屉（60）与遮罩（50），导航栏（30）不与其相交。
+   移动端维持默认 10，抽屉打开时页脚照常被盖住。 */
+@media (min-width: 60rem) {
+  :root {
+    --vp-z-index-footer: calc(var(--vp-z-index-sidebar) + 1);
+  }
+}
+
+/* ========== 固定层让位：菜单底边贴在页脚上缘 ========== */
+/* 右侧大纲：aside-container 由 fixed 改 sticky。它位于 VPDoc 的 .aside 列内，
+   列高等于正文高度、底边即页脚上缘——sticky 吸附于视口顶部随页滚动，
+   正文读完后被列底边自然推起，菜单底边始终贴在页脚上缘，纯 CSS 无 JS。 */
+.VPDoc .aside-container {
+  position: sticky;
+  top: 0;
+}
+
+/* 左侧 sidebar：本版本 <VPSidebar> 是 .Layout 的直接子元素（VPContent 的兄弟），
+   sticky 的吸附范围由父容器决定，而 .Layout 底边是页面末尾（页脚下缘），
+   改 sticky 会被推到页脚底下、末尾选项依旧被盖住——纯 CSS 不可行。
+   故保留 fixed，由 SiteFooter 把页脚可见高度写入 --vp-footer-visible，
+   滚动到底时收缩底边，视觉效果与 sticky 推起一致（见 SiteFooter.vue）。 */
+.Layout .VPSidebar {
+  bottom: var(--vp-footer-visible, 0px);
+}
