@@ -58,11 +58,27 @@ const linkColumns = [LINKS.related.slice(0, mid), LINKS.related.slice(mid)]
 // 底边始终贴在页脚上缘（见 style.css「固定层让位」一节）。rAF 节流滚动监听。
 const footerEl = ref<HTMLElement | null>(null)
 let footerRaf = 0
+let prevFooterVisible = 0
+let sidebarEl: Element | null = null
 const syncFooterVisible = () => {
   footerRaf = 0
   if (!footerEl.value || typeof window === 'undefined') return
   const visible = Math.max(0, window.innerHeight - footerEl.value.getBoundingClientRect().top)
+  const delta = visible - prevFooterVisible
+  prevFooterVisible = visible
   document.documentElement.style.setProperty('--vp-footer-visible', `${visible}px`)
+  // sidebar 内容随动：盒子每收缩/扩张多少，内部滚动就同步推进/回退多少，
+  // 菜单末尾选项贴着页脚上缘一起移动，否则收缩后末尾选项会被页脚藏住、
+  // 需要手动滚 sidebar 内部滚动条才能看到（桌面端；移动端抽屉不参与）
+  if (delta !== 0 && window.matchMedia('(min-width: 60rem)').matches) {
+    sidebarEl ??= document.querySelector('.VPSidebar')
+    if (sidebarEl) {
+      const max = sidebarEl.scrollHeight - sidebarEl.clientHeight
+      if (max > 0) {
+        sidebarEl.scrollTop = Math.min(max, Math.max(0, sidebarEl.scrollTop + delta))
+      }
+    }
+  }
 }
 const queueFooterSync = () => {
   if (!footerRaf) footerRaf = requestAnimationFrame(syncFooterVisible)
