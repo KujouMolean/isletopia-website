@@ -10,7 +10,7 @@ intro:
     梦幻之屿是已运营十年的
     Minecraft 老牌空岛生存服。从最初几座小小的空岛，到如今玩法成熟、社区活跃的云上家园，岛屿上的每一块矿、每一座建筑，都是玩家亲手打造。这里主打空岛生存的经典循环——扩建岛屿、发展科技、布置建筑、与岛友互动，辅以多年沉淀的稳定规则与插件体系。老玩家在这里有熟悉的伙伴，新玩家也能轻松找到属于自己的小岛。如果你想拥有一片云上的天地，欢迎登上梦幻之屿。
   image: /images/home-intro.jpg
-  link: /guide/intro
+  link: /about
   linkText: 查看服务器简介
 
 features:
@@ -29,7 +29,7 @@ features:
       title: 困难空岛
       desc: 实现李芒果空岛的相关特性，是当前最流行的生电空岛高难玩法之一，面向热爱折腾、追求极限的硬核玩家。
   moreText: 查看全部特色玩法
-  moreLink: /guide/features
+  moreLink: /beginner/特色玩法
 
 steps:
   title: 新手入服，只需三步
@@ -54,7 +54,7 @@ steps:
     - text: Axolotl 启动器
       href: https://axlmc.org/
   cta: { text: 加入 QQ 群, link: /join-us }
-  guide: { text: 入服教程, link: /guide/beginner/入服教程 }
+  guide: { text: 入服教程, link: /beginner/入服教程 }
 ---
 <!-- 第一屏 -->
 <VideoBackground>

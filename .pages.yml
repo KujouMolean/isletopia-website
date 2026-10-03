@@ -161,11 +161,27 @@ content:
   # 二、静态文档集合
   # ===========================================================================
 
-  # 5. 游玩指南（含 beginner/ 子目录）
-  - name: guide
-    label: 游玩指南
+  # 5. 新手指南
+  - name: beginner
+    label: 新手指南
     type: collection
-    path: guide
+    path: beginner
+    filename: "{primary}.md"
+    format: yaml-frontmatter
+    view:
+      fields: [title]
+      primary: title
+    fields:
+      - { name: title, label: 标题, type: string }
+      - { name: description, label: 页面描述, type: text }
+      - { name: sidebar, label: 显示侧边栏, type: boolean, default: false }
+      - { name: body, label: 正文, type: rich-text }
+
+  # 6. Wiki（含 空岛类型/、群内小游戏/ 子目录）
+  - name: wiki
+    label: Wiki
+    type: collection
+    path: wiki
     subfolders: true
     filename: "{primary}.md"
     format: yaml-frontmatter
@@ -178,7 +194,7 @@ content:
       - { name: sidebar, label: 显示侧边栏, type: boolean, default: false }
       - { name: body, label: 正文, type: rich-text }
 
-  # 6. 法律文档
+  # 7. 法律文档
   - name: legal
     label: 法律文档
     type: collection
@@ -194,7 +210,7 @@ content:
       - { name: sidebar, label: 显示侧边栏, type: boolean, default: false }
       - { name: body, label: 正文, type: rich-text }
 
-  # 7. 媒体资源页（gallery / photos / replays / saves / works）
+  # 8. 媒体资源页（gallery / photos / replays / saves / works）
   - name: media-pages
     label: 资源与下载
     type: collection
@@ -214,7 +230,7 @@ content:
   # 三、单文件
   # ===========================================================================
 
-  # 8. 首页（根目录 index.md）
+  # 9. 首页（根目录 index.md）
   # body 是五屏 Vue 组件模板，隐藏以避免 CMS 富文本编辑器破坏组件标签；
   # intro / features / steps 三屏内容由 HomeIntro / HomeFeatures / HomeSteps 经 useData() 读取
   - name: home
@@ -295,7 +311,7 @@ content:
               - { name: link, label: 链接, type: string }
       - { name: body, label: 正文, type: rich-text, hidden: true }
 
-  # 9. 动态聚合页（根目录 update.md）
+  # 10. 动态聚合页（根目录 update.md）
   # - name: update-page
   #   label: 动态聚合页
   #   type: file
@@ -307,7 +323,7 @@ content:
   #     - { name: sidebar, label: 显示侧边栏, type: boolean, default: false, hidden: true }
   #     - { name: body, label: 正文, type: rich-text }
 
-  # 10. 关于页面
+  # 11. 关于页面
   - name: about
     label: 关于页面
     type: file
@@ -319,7 +335,19 @@ content:
       - { name: sidebar, label: 显示侧边栏, type: boolean, default: false }
       - { name: body, label: 正文, type: rich-text }
 
-  # 11. 加入服务器
+  # 12. 常见问题（根目录 faq.md）
+  - name: faq
+    label: 常见问题
+    type: file
+    path: faq.md
+    format: yaml-frontmatter
+    fields:
+      - { name: title, label: 标题, type: string }
+      - { name: description, label: 页面描述, type: text }
+      - { name: sidebar, label: 显示侧边栏, type: boolean, default: false }
+      - { name: body, label: 正文, type: rich-text }
+
+  # 13. 加入服务器
   - name: join-us
     label: 加入服务器
     type: file

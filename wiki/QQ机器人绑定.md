@@ -1,6 +1,5 @@
 ---
 title: QQ 机器人绑定系统
-sidebar: false
 ---
 
 # QQ 机器人绑定系统
@@ -119,4 +118,4 @@ A：频道绑定可尝试 `/bind fix`；仍不正常请联系管理员协助核�
 
 ---
 
-**延伸阅读**：[每日签到](chatgame-signin.md) · [挖矿](chatgame-mining.md) · [钓鱼](chatgame-fishing.md) · [农场](chatgame-farming.md) · [模拟炒股](chatgame-stock.md)
+**延伸阅读**：[每日签到](群内小游戏/每日签到.md) · [挖矿](群内小游戏/挖矿.md) · [钓鱼](群内小游戏/钓鱼.md) · [农场](群内小游戏/农场.md) · [模拟炒股](群内小游戏/模拟炒股.md)
