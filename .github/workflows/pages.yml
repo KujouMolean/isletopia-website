@@ -1,0 +1,60 @@
+# GitHub Pages 部署:把 deploy 分支构建出的 .vitepress/dist 发布到
+# https://tobbylowrie.github.io/isletopia-website/
+#
+# - 工作流只存在于 main 分支,由手动触发(gh workflow run / 网页按钮);
+#   检出 deploy 分支只是 CI 运行时的临时副本,不会对 deploy 产生任何提交。
+# - VitePress 2 的 CLI 不支持 --base 覆盖,站点源码保持零改动,
+#   通过 Node API 在构建时注入 base(项目页部署在 /isletopia-website/ 子路径)。
+# - 正式站点仍由 Cloudflare Pages 部署(根路径,base 默认 '/'),本工作流不影响它。
+name: Pages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: deploy
+
+      - uses: actions/configure-pages@v5
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build (base=/isletopia-website/)
+        run: |
+          node --input-type=module -e "const v = await import('vitepress'); await v.build('.', { base: '/isletopia-website/' })"
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .vitepress/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
