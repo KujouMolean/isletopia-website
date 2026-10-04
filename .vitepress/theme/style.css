@@ -424,10 +424,17 @@ html.home-over-video .VPNavAppearance .icon [class^='vpi-'] {
 /* ========== 固定层让位：菜单底边贴在页脚上缘 ========== */
 /* 右侧大纲：aside-container 由 fixed 改 sticky。它位于 VPDoc 的 .aside 列内，
    列高等于正文高度、底边即页脚上缘——sticky 吸附于视口顶部随页滚动，
-   正文读完后被列底边自然推起，菜单底边始终贴在页脚上缘，纯 CSS 无 JS。 */
+   正文读完后被列底边自然推起，菜单底边始终贴在页脚上缘，纯 CSS 无 JS。
+   注意必须同时用 max-height 随 --vp-footer-visible 收缩盒子：若保持默认
+   height:100vh，页脚进入视口后盒顶会被推出视口上沿（超出量=页脚可见高度），
+   大纲靠上条目的几何位置落到视口上方，VitePress outline 联动的
+   scrollIntoView({block:'nearest'}) 找不到能从内部露出它的滚动容器，
+   就会平滑滚动主文档把页面拽离页底（滚到底又被弹回、页脚看不全的根因）。
+   收缩后盒子完整处于视口内，scrollIntoView 最多滚动容器自身内部。 */
 .VPDoc .aside-container {
   position: sticky;
   top: 0;
+  max-height: calc(100vh - var(--vp-footer-visible, 0px));
 }
 
 /* 左侧 sidebar：本版本 <VPSidebar> 是 .Layout 的直接子元素（VPContent 的兄弟），
