@@ -479,16 +479,15 @@ content:
       - { name: sidebar, label: 显示侧边栏, type: boolean, default: false }
       - { name: body, label: 正文, type: rich-text }
 
-  # 12. 常见问题（根目录 faq.md）
+  # 12. 常见问题（已并入 Wiki，wiki/常见问题.md，侧边栏底部分组）
   - name: faq
-    label: 常见问题
+    label: Wiki · 常见问题
     type: file
-    path: faq.md
+    path: wiki/常见问题.md
     format: yaml-frontmatter
     fields:
       - { name: title, label: 标题, type: string }
       - { name: description, label: 页面描述, type: text }
-      - { name: sidebar, label: 显示侧边栏, type: boolean, default: false }
       - { name: body, label: 正文, type: rich-text }
 
   # 13. 加入服务器

@@ -16,7 +16,7 @@ export const SEARCH_SHORTCUT: string = 'Mod+K'
 // - 目录名 → 该目录下全部页面（含目录首页），如 'wiki'
 // - 带扩展名 → 精确匹配单个页面，如 'faq.md'
 // 增删范围后需重新 docs:build；搜索快捷键与入口仅在范围内的页面可用。
-export const SEARCH_SOURCES: string[] = ['wiki', 'resources', 'faq.md']
+export const SEARCH_SOURCES: string[] = ['wiki', 'resources']
 
 // —— 界面文案：入口搜索框（SearchBox）——
 // 页面宽版（markdown 里的 <SearchBox />）

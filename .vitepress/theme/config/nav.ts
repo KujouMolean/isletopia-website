@@ -24,7 +24,7 @@ export const NAV: DefaultTheme.NavItem[] = [
       { text: '🍲 合成配方查询', link: '/crafting' }
     ]
   },
-  { text: '🤔 常见问题', link: '/faq' },
+  // 常见问题已并入 Wiki 侧边栏底部分组，不再单独占导航位
   { text: '💬 提交反馈', link: LINKS.feedbackUrl },
   { text: '🏝 关于', link: '/about' }
 ]

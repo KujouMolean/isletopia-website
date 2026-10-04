@@ -155,6 +155,11 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
         { text: '农场', link: '/wiki/群内小游戏/农场' },
         { text: '模拟炒股', link: '/wiki/群内小游戏/模拟炒股' }
       ]
+    },
+    {
+      text: '常见问题',
+      collapsed: true,
+      items: [{ text: '高频问题解答', link: '/wiki/常见问题' }]
     }
   ]
 }
