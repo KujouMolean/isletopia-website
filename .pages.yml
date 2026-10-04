@@ -108,7 +108,7 @@ content:
                 summary: "{item}（{count}）"
             fields:
               - { name: item, label: 物品名称, type: string, required: true }
-              - { name: count, label: 数量（1、1~2、不超过3 等均可）, type: string }
+              - { name: count, label: 数量（留空默认 1）, type: string }
           - { name: limit, label: 参与限制, type: text }
           - name: contact
             label: 负责管理员
