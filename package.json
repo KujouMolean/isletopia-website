@@ -1,10 +1,11 @@
 {
   "devDependencies": {
+    "node-html-parser": "^9.0.4",
     "vitepress": "^2.0.0-alpha.20"
   },
   "scripts": {
     "docs:dev": "vitepress dev --host",
-    "docs:build": "vitepress build",
+    "docs:build": "vitepress build && node scripts/build-search-index.mjs",
     "docs:preview": "vitepress preview",
     "deploy": "node scripts/deploy.mjs",
     "deploy:dry": "node scripts/deploy.mjs --dry-run"
