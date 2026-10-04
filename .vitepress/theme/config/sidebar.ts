@@ -156,10 +156,7 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
         { text: '模拟炒股', link: '/wiki/群内小游戏/模拟炒股' }
       ]
     },
-    {
-      text: '常见问题',
-      collapsed: true,
-      items: [{ text: '高频问题解答', link: '/wiki/常见问题' }]
-    }
+    // 单页分组：点击「常见问题」标题即打开文章本身
+    { text: '常见问题', link: '/wiki/常见问题' }
   ]
 }
