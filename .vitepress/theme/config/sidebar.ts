@@ -10,7 +10,7 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
   '/wiki/': [
     { text: 'Wiki 总览', link: '/wiki/' },
     {
-      text: '新手必看',
+      text: '新手必看教程（入门）',
       link: '/wiki/新手必看/',
       collapsed: true,
       items: [
@@ -20,7 +20,7 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
       ]
     },
     {
-      text: '高手必看',
+      text: '新手强化教程（进阶）',
       collapsed: true,
       items: [
         { text: '部分物资获取', link: '/wiki/高手必看/部分物资获取' },
