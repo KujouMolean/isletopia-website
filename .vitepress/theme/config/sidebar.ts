@@ -33,37 +33,37 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
       text: '岛屿特性',
       collapsed: true,
       items: [
-        { text: '单方块', link: '/wiki/单方块' },
-        { text: '九选一', link: '/wiki/九选一' },
-        { text: '钓鱼', link: '/wiki/钓鱼' },
-        { text: '随机方块', link: '/wiki/随机方块' },
-        { text: '假日群岛', link: '/wiki/假日群岛' },
-        { text: '海洋世界', link: '/wiki/海洋世界' },
-        { text: '基因鸡', link: '/wiki/基因鸡' },
-        { text: '粘液科技', link: '/wiki/粘液科技' },
-        { text: '淬炼', link: '/wiki/淬炼' }
+        { text: '单方块', link: '/wiki/岛屿特性/单方块' },
+        { text: '九选一', link: '/wiki/岛屿特性/九选一' },
+        { text: '钓鱼', link: '/wiki/岛屿特性/钓鱼' },
+        { text: '随机方块', link: '/wiki/岛屿特性/随机方块' },
+        { text: '假日群岛', link: '/wiki/岛屿特性/假日群岛' },
+        { text: '海洋世界', link: '/wiki/岛屿特性/海洋世界' },
+        { text: '基因鸡', link: '/wiki/岛屿特性/基因鸡' },
+        { text: '粘液科技', link: '/wiki/岛屿特性/粘液科技' },
+        { text: '淬炼', link: '/wiki/岛屿特性/淬炼' }
       ]
     },
     {
       text: '资源获取',
       collapsed: true,
       items: [
-        { text: '刷石机出矿', link: '/wiki/刷石机出矿' },
-        { text: '空岛合成配方', link: '/wiki/空岛合成配方' },
-        { text: '李芒果机制', link: '/wiki/李芒果机制' },
-        { text: '特殊生物与掉落', link: '/wiki/特殊生物与掉落' }
+        { text: '刷石机出矿', link: '/wiki/资源获取/刷石机出矿' },
+        { text: '空岛合成配方', link: '/wiki/资源获取/空岛合成配方' },
+        { text: '李芒果机制', link: '/wiki/资源获取/李芒果机制' },
+        { text: '特殊生物与掉落', link: '/wiki/资源获取/特殊生物与掉落' }
       ]
     },
     {
       text: '特殊功能',
       collapsed: true,
       items: [
-        { text: '幻形', link: '/wiki/幻形' },
-        { text: '幻形图鉴', link: '/wiki/幻形图鉴' },
-        { text: '幽匿侵蚀', link: '/wiki/幽匿侵蚀' },
-        { text: '祈愿池', link: '/wiki/祈愿池' },
-        { text: '幸运色', link: '/wiki/幸运色' },
-        { text: '挑战任务', link: '/wiki/挑战任务' }
+        { text: '幻形', link: '/wiki/特殊功能/幻形' },
+        { text: '幻形图鉴', link: '/wiki/特殊功能/幻形图鉴' },
+        { text: '幽匿侵蚀', link: '/wiki/特殊功能/幽匿侵蚀' },
+        { text: '祈愿池', link: '/wiki/特殊功能/祈愿池' },
+        { text: '幸运色', link: '/wiki/特殊功能/幸运色' },
+        { text: '挑战任务', link: '/wiki/特殊功能/挑战任务' }
       ]
     },
     {
@@ -85,19 +85,19 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
         { text: '安全落点', link: '/wiki/便利功能/安全落点' },
         { text: '伤害显示', link: '/wiki/便利功能/伤害显示' },
         { text: '邮箱', link: '/wiki/便利功能/邮箱' },
-        { text: '传送牌', link: '/wiki/传送牌' },
-        { text: '云仓', link: '/wiki/云仓' },
-        { text: '岛屿管理', link: '/wiki/岛屿管理' },
-        { text: '岛屿开关', link: '/wiki/岛屿开关' }
+        { text: '传送牌', link: '/wiki/便利功能/传送牌' },
+        { text: '云仓', link: '/wiki/便利功能/云仓' },
+        { text: '岛屿管理', link: '/wiki/便利功能/岛屿管理' },
+        { text: '岛屿开关', link: '/wiki/便利功能/岛屿开关' }
       ]
     },
     {
       text: '系统功能',
       collapsed: true,
       items: [
-        { text: '岛屿系统', link: '/wiki/岛屿系统' },
-        { text: '玩家系统', link: '/wiki/玩家系统' },
-        { text: '经济系统', link: '/wiki/经济系统' }
+        { text: '岛屿系统', link: '/wiki/系统功能/岛屿系统' },
+        { text: '玩家系统', link: '/wiki/系统功能/玩家系统' },
+        { text: '经济系统', link: '/wiki/系统功能/经济系统' }
       ]
     },
     {
@@ -130,7 +130,7 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
       text: 'QQ群功能',
       collapsed: true,
       items: [
-        { text: 'QQ 机器人绑定', link: '/wiki/QQ机器人绑定' },
+        { text: 'QQ 机器人绑定', link: '/wiki/QQ群功能/QQ机器人绑定' },
         { text: '每日签到', link: '/wiki/群内小游戏/每日签到' },
         { text: '挖矿', link: '/wiki/群内小游戏/挖矿' },
         { text: '钓鱼', link: '/wiki/群内小游戏/钓鱼' },
@@ -140,11 +140,23 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
     }
   ],
   '/beginner/': [
-    { text: '新手必看', link: '/beginner/' },
-    { text: '入服教程', link: '/beginner/入服教程' },
-    { text: '部分物资获取', link: '/beginner/部分物资获取' },
-    { text: '推荐下载的模组安装使用', link: '/beginner/推荐下载的模组安装使用' },
-    { text: '特色玩法', link: '/beginner/特色玩法' },
-    { text: '规则', link: '/beginner/规则' }
+    {
+      text: '新手必看',
+      collapsed: true,
+      link: '/beginner/',
+      items: [
+        { text: '入服教程', link: '/beginner/入服教程' },
+        { text: '特色玩法', link: '/beginner/特色玩法' },
+        { text: '规则', link: '/beginner/规则' }
+      ]
+    },
+    {
+      text: '高手必看',
+      collapsed: true,
+      items: [
+        { text: '部分物资获取', link: '/beginner/部分物资获取' },
+        { text: '推荐下载的模组安装使用', link: '/beginner/推荐下载的模组安装使用' },
+      ]
+    }
   ]
 }

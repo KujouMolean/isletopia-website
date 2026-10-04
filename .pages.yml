@@ -177,21 +177,153 @@ content:
       - { name: sidebar, label: 显示侧边栏, type: boolean, default: false }
       - { name: body, label: 正文, type: rich-text }
 
-  # 6. Wiki（含 空岛类型/、群内小游戏/ 子目录）
-  - name: wiki
-    label: Wiki
+  # 6. Wiki —— 按主题侧边栏（theme/config/sidebar.ts）的分组拆成二级目录集合，
+  #    在 CMS 里新建 Wiki 文档时会直接落进对应分类目录；目录与侧边栏分组一一对应：
+  #    空岛类型/ 岛屿特性/ 资源获取/ 特殊功能/ 便利功能/ 系统功能/ 服务器小游戏/ 群内小游戏/ QQ群功能/
+  # 6.0 Wiki 总览页（wiki/index.md）
+  - name: wiki-index
+    label: Wiki 总览
+    type: file
+    path: wiki/index.md
+    format: yaml-frontmatter
+    fields:
+      - { name: title, label: 页面标题, type: string }
+      - { name: description, label: 页面描述, type: text }
+      - { name: body, label: 正文, type: rich-text }
+
+  # 6.1 空岛类型
+  - name: wiki-island-types
+    label: Wiki · 空岛类型
     type: collection
-    path: wiki
-    subfolders: true
+    path: wiki/空岛类型
     filename: "{primary}.md"
     format: yaml-frontmatter
     view:
       fields: [title]
       primary: title
     fields:
-      - { name: title, label: 标题, type: string }
+      - { name: title, label: 页面标题, type: string, required: true }
       - { name: description, label: 页面描述, type: text }
-      - { name: sidebar, label: 显示侧边栏, type: boolean, default: false }
+      - { name: body, label: 正文, type: rich-text }
+
+  # 6.2 岛屿特性
+  - name: wiki-island-features
+    label: Wiki · 岛屿特性
+    type: collection
+    path: wiki/岛屿特性
+    filename: "{primary}.md"
+    format: yaml-frontmatter
+    view:
+      fields: [title]
+      primary: title
+    fields:
+      - { name: title, label: 页面标题, type: string, required: true }
+      - { name: description, label: 页面描述, type: text }
+      - { name: body, label: 正文, type: rich-text }
+
+  # 6.3 资源获取
+  - name: wiki-resources
+    label: Wiki · 资源获取
+    type: collection
+    path: wiki/资源获取
+    filename: "{primary}.md"
+    format: yaml-frontmatter
+    view:
+      fields: [title]
+      primary: title
+    fields:
+      - { name: title, label: 页面标题, type: string, required: true }
+      - { name: description, label: 页面描述, type: text }
+      - { name: body, label: 正文, type: rich-text }
+
+  # 6.4 特殊功能
+  - name: wiki-special-features
+    label: Wiki · 特殊功能
+    type: collection
+    path: wiki/特殊功能
+    filename: "{primary}.md"
+    format: yaml-frontmatter
+    view:
+      fields: [title]
+      primary: title
+    fields:
+      - { name: title, label: 页面标题, type: string, required: true }
+      - { name: description, label: 页面描述, type: text }
+      - { name: body, label: 正文, type: rich-text }
+
+  # 6.5 便利功能
+  - name: wiki-conveniences
+    label: Wiki · 便利功能
+    type: collection
+    path: wiki/便利功能
+    filename: "{primary}.md"
+    format: yaml-frontmatter
+    view:
+      fields: [title]
+      primary: title
+    fields:
+      - { name: title, label: 页面标题, type: string, required: true }
+      - { name: description, label: 页面描述, type: text }
+      - { name: body, label: 正文, type: rich-text }
+
+  # 6.6 系统功能
+  - name: wiki-systems
+    label: Wiki · 系统功能
+    type: collection
+    path: wiki/系统功能
+    filename: "{primary}.md"
+    format: yaml-frontmatter
+    view:
+      fields: [title]
+      primary: title
+    fields:
+      - { name: title, label: 页面标题, type: string, required: true }
+      - { name: description, label: 页面描述, type: text }
+      - { name: body, label: 正文, type: rich-text }
+
+  # 6.7 服务器小游戏
+  - name: wiki-minigames
+    label: Wiki · 服务器小游戏
+    type: collection
+    path: wiki/服务器小游戏
+    filename: "{primary}.md"
+    format: yaml-frontmatter
+    view:
+      fields: [title]
+      primary: title
+    fields:
+      - { name: title, label: 页面标题, type: string, required: true }
+      - { name: description, label: 页面描述, type: text }
+      - { name: body, label: 正文, type: rich-text }
+
+  # 6.8 群内小游戏（侧边栏归入「QQ群功能」分组）
+  - name: wiki-group-games
+    label: Wiki · 群内小游戏
+    type: collection
+    path: wiki/群内小游戏
+    filename: "{primary}.md"
+    format: yaml-frontmatter
+    view:
+      fields: [title]
+      primary: title
+    fields:
+      - { name: title, label: 页面标题, type: string, required: true }
+      - { name: description, label: 页面描述, type: text }
+      - { name: body, label: 正文, type: rich-text }
+
+  # 6.9 QQ群功能
+  - name: wiki-qq
+    label: Wiki · QQ群功能
+    type: collection
+    path: wiki/QQ群功能
+    filename: "{primary}.md"
+    format: yaml-frontmatter
+    view:
+      fields: [title]
+      primary: title
+    fields:
+      - { name: title, label: 页面标题, type: string, required: true }
+      - { name: description, label: 页面描述, type: text }
       - { name: body, label: 正文, type: rich-text }
 
   # 7. 法律文档

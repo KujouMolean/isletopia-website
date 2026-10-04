@@ -118,7 +118,7 @@ export function generateSearchIndex(distDir: string): void {
   const htmlFiles: string[] = []
   walkHtml(distDir, htmlFiles)
 
-  // 文件路径 → 站点 URL（如 dist/wiki/钓鱼.html → /wiki/钓鱼.html）；中文路径保持
+  // 文件路径 → 站点 URL（如 dist/wiki/岛屿特性/钓鱼.html → /wiki/岛屿特性/钓鱼.html）；中文路径保持
   // 原样不转义，与站内互链（href="/wiki/空岛类型/...html"）及 router.go 的用法一致
   const pages = htmlFiles
     .map((file) => ({ file, url: '/' + relative(distDir, file).split('\\').join('/') }))
