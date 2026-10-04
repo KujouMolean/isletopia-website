@@ -11,6 +11,18 @@ author:
 
 aliases:
 description: 
+event:
+  type: 评分类
+  deadline: 长期
+  platform: MCMOD
+  link: https://play.mcmod.cn/sv20187897.html
+  rewards:
+    - item: 海洋之心
+      count: 2
+  limit: 需在评分区评分，仅评论无效；评分人数累计100/200/300人时加发1个
+  contact:
+    - jun1mo1xiao
+    - MiaoMiao777
 category: events
 layout: doc
 ---

@@ -11,6 +11,18 @@ author:
 
 aliases:
 description: 
+event:
+  type: 宣传类
+  deadline: 长期
+  platform: NameMC
+  link: https://zh-cn.namemc.com/server/play.molean.com
+  rewards:
+    - item: 龙首
+      count: 1
+    - item: 海洋之心
+      count: 1
+  limit: 每个正版账号限领一次，更换ID不可重复领取
+  contact: []
 category: events
 layout: doc
 ---
