@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { mcTextures, mcTextureAssets, craftingAssetsInlineLimit } from './mc-textures-plugin.mts'
+import { generateSearchIndex } from './search/generate-index.ts'
 import { LINKS, NAV, SEO, SIDEBAR, SITE_INFO } from './theme/config'
 
 // 「动态」页聚合的文章目录（须与 NewsFeed.vue 的 glob 保持一致）
@@ -80,6 +81,13 @@ export default defineConfig({
       `(function(){if(location.pathname==='/'||/\\/index\\.html(\\?|#|$)/.test(location.pathname))document.documentElement.classList.add('home-over-video')})()`
     ]
   ],
+  // 全站搜索的构建期索引：在 vitepress build 的 buildEnd 里直接生成，
+  // 保证任何构建环境（CF Pages、本地）的产物都带 <outDir>/search/，
+  // 不再依赖 package.json 构建命令里串联的独立脚本步骤（CF 上缺失会导致
+  // 线上 /search/meta.json 404、搜索报「索引加载失败」）。逻辑见 search/generate-index.ts
+  buildEnd({ outDir }) {
+    generateSearchIndex(outDir)
+  },
   transformPageData(pageData) {
     const fp = pageData.filePath
     const frontmatter = { ...pageData.frontmatter }
