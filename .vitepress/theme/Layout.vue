@@ -6,6 +6,7 @@ import SiteFooter from './components/SiteFooter.vue'
 import ArticleMeta from './components/ArticleMeta.vue'
 import SiteBanner from './components/SiteBanner.vue'
 import SidebarToolbar from './components/SidebarToolbar.vue'
+import SearchModal from './search/SearchModal.vue'
 
 // 打开页面时，左侧目录自动滚动，把当前页对应条目定位到可视区中部（而非 nearest
 // 贴边）：分组展开（collapsed 自动展开由 VitePress 处理）要等 nextTick 后 class
@@ -51,6 +52,12 @@ onMounted(scrollSidebarToActive)
     <!-- 「动态」文章页元信息（组件挂载后自行移到正文第一个 h1 之后） -->
     <template #doc-after>
       <ArticleMeta />
+    </template>
+    <!-- 全站搜索弹窗（全局单例）：本体是 Teleport 到 body 的不可见容器，
+         导航栏上不渲染任何东西；快捷键按 config/search.mjs 的 SEARCH_SOURCES
+         门控、SEARCH_SHORTCUT 配置，页面可见入口是 markdown 里的 <SearchBox /> -->
+    <template #nav-bar-content-after>
+      <SearchModal />
     </template>
   </DefaultTheme.Layout>
 </template>

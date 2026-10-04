@@ -1,14 +1,17 @@
 <script setup lang="ts">
-// 全站搜索弹窗：全文检索 wiki / 新手教程等文档，BM25 排序 + 高亮摘要 + 锚点直达。
-// 本体只挂载一份（Layout 的 nav-bar-content-after 插槽），桌面与移动端的
-// SearchButton 通过共享 store（state.ts）开关它。dev 模式下索引产物不存在，
+// 全站搜索弹窗：全文检索 config/search.mjs 覆盖范围内的文档，BM25 排序 +
+// 高亮摘要 + 锚点直达。作为全局单例挂在 Layout 上（本体是 Teleport 到 body
+// 的不可见容器，不在导航栏显示任何东西），快捷键与索引预取仅在覆盖范围内的
+// 页面生效；页面里的可见入口是 SearchBox 组件。dev 模式下索引产物不存在，
 // 弹窗内给出构建提示。
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { useRouter } from 'vitepress'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useData, useRouter } from 'vitepress'
 import { search, warmup, type SearchResult } from './engine'
+import { matchesShortcut, parseShortcut, pathInScope } from './shortcut'
 import { searchState, toggleSearch } from './state'
 
 const router = useRouter()
+const { page } = useData()
 
 const query = ref('')
 const results = ref<SearchResult[]>([])
@@ -20,6 +23,11 @@ const inputEl = ref<HTMLInputElement | null>(null)
 const listEl = ref<HTMLElement | null>(null)
 
 const isDev = import.meta.env.DEV
+
+// 当前页是否在搜索覆盖范围内（config/search.mjs 的 SEARCH_SOURCES）：
+// 范围内的页面响应快捷键、预取索引；范围外（博客、更新日志等）完全不感知
+const routeInScope = computed(() => pathInScope(page.value.relativePath))
+const shortcut = parseShortcut()
 
 let debounceTimer: ReturnType<typeof setTimeout> | undefined
 let seq = 0 // 只采纳最后一次搜索的结果，防止慢响应覆盖新输入
@@ -98,7 +106,8 @@ function go(r: SearchResult) {
 }
 
 function onGlobalKey(e: KeyboardEvent) {
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+  if (!routeInScope.value) return
+  if (matchesShortcut(e, shortcut)) {
     e.preventDefault()
     toggleSearch()
   }
@@ -106,8 +115,16 @@ function onGlobalKey(e: KeyboardEvent) {
 
 onMounted(() => {
   window.addEventListener('keydown', onGlobalKey)
-  if (!isDev) warmup()
 })
+
+// 进入覆盖范围时空闲预取索引，首次搜索不等网络；范围外不加载
+watch(
+  routeInScope,
+  (inScope) => {
+    if (inScope && !isDev) warmup()
+  },
+  { immediate: true }
+)
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', onGlobalKey)

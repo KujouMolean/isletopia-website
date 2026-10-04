@@ -13,14 +13,12 @@ import { fileURLToPath } from 'node:url'
 import { gzipSync } from 'node:zlib'
 import { parse } from 'node-html-parser'
 import { tokenize } from '../.vitepress/search/tokenizer.mjs'
+// 索引范围白名单与前端共用同一份配置（唯一数据源，含搜索快捷键定义）
+import { SEARCH_SOURCES } from '../.vitepress/theme/config/search.mjs'
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const distDir = resolve(repoRoot, '.vitepress/dist')
 const outDir = join(distDir, 'search')
-
-// 索引范围白名单：目录名按「/<名>/ 前缀」匹配（含目录首页），带扩展名的按整页 URL 匹配。
-// 增删搜索范围只动这里，例如后续扩全站时加上 'blogs'、'events' 等。
-const SEARCH_SOURCES = ['wiki', 'beginner', 'resources', 'faq.md']
 
 // BM25 参数，前端 engine.ts 从 meta 里读取同一份（k1 词频饱和、b 长度归一强度）
 const K1 = 1.2

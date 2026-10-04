@@ -1,10 +1,12 @@
 <script setup lang="ts">
 // 页面级搜索入口：给 /wiki/index.md 这类索引页提供一个醒目的搜索框，
-// 点击/回车打开搜索弹窗。弹窗本体（SearchModal）随本组件挂载、Teleport 到
-// body，因此把这个组件放进 markdown（需在 theme/index.ts 全局注册）即获得
-// 完整搜索能力；Ctrl/Cmd+K 快捷键也随组件生效（仅在本组件所在页面）。
-import SearchModal from './SearchModal.vue'
+// 点击打开全局单例的搜索弹窗（弹窗挂在 Layout 上，由 config/search.mjs 的
+// SEARCH_SHORTCUT 定义快捷键、SEARCH_SOURCES 决定在哪些页面生效）。
+// 在 markdown 中使用前需在 theme/index.ts 全局注册。
+import { shortcutDisplay } from './shortcut'
 import { toggleSearch } from './state'
+
+const keys = shortcutDisplay()
 </script>
 
 <template>
@@ -26,9 +28,8 @@ import { toggleSearch } from './state'
         <path d="m20 20-3.5-3.5" />
       </svg>
       <span class="placeholder">搜索 wiki 全部文档：空岛类型、特性机制、小游戏、指令…</span>
-      <span class="kbd" aria-hidden="true">Ctrl K</span>
+      <span class="kbd" aria-hidden="true">{{ keys.join(' ') }}</span>
     </button>
-    <SearchModal />
   </div>
 </template>
 

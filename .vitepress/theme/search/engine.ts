@@ -62,8 +62,10 @@ export function loadMeta(): Promise<Meta> {
   return metaPromise
 }
 
-/** 空闲时预热索引，让用户第一次搜索就不等网络（dev 模式下 404 被静默吞掉）。 */
+/** 空闲时预热索引，让用户第一次搜索就不等网络（SSR/预渲染阶段无 window，直接跳过；
+ *  dev 模式下 404 被静默吞掉）。 */
 export function warmup(): void {
+  if (typeof window === 'undefined') return
   const idle = (cb: () => void) =>
     'requestIdleCallback' in window ? requestIdleCallback(() => cb()) : setTimeout(cb, 1500)
   idle(() => {
