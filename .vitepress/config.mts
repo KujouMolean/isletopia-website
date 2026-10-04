@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitepress'
 import { execSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { mcTextures, mcTextureAssets, craftingAssetsInlineLimit } from './mc-textures-plugin.mts'
@@ -47,6 +47,52 @@ function getFeedLastUpdatedMap(): Map<string, number> {
   feedLastUpdatedMap = map
   return map
 }
+
+// —— 「活动」栏：扫描 events/ 目录自动生成，无需手工登记 ——
+// 导航「活动」入口指向 /events/，该页重定向到最新一篇；左侧边栏列出全部活动。
+// 过滤规则与动态页一致：hide: true 不展示；按 date frontmatter 倒序（ISO 日期可直接按字典序比）。
+interface EventItem {
+  title: string
+  url: string // 不带 .html 的站内路径，如 /events/长期建筑活动
+  date: string
+}
+
+let eventsListCache: EventItem[] | null = null
+
+function getEventsList(): EventItem[] {
+  if (eventsListCache) return eventsListCache
+  const eventsDir = path.resolve(repoRoot, 'events')
+  const list: EventItem[] = []
+  for (const name of readdirSync(eventsDir)) {
+    if (!name.endsWith('.md') || name === 'index.md') continue
+    const raw = readFileSync(path.join(eventsDir, name), 'utf8')
+    const fm = /^---\r?\n([\s\S]*?)\r?\n---/.exec(raw)?.[1] ?? ''
+    const get = (key: string): string | undefined =>
+      new RegExp(`^${key}:[ \\t]*(.*)$`, 'm').exec(fm)?.[1]?.trim().replace(/^['"](.*)['"]$/, '$1')
+    if (get('hide') === 'true') continue
+    list.push({
+      title: get('title') || name.replace(/\.md$/, ''),
+      url: `/events/${name.replace(/\.md$/, '')}`,
+      date: get('date') || ''
+    })
+  }
+  list.sort((a, b) => (a.date < b.date ? 1 : -1))
+  eventsListCache = list
+  return list
+}
+
+// 侧边栏「活动」分组：与 wiki/beginner 的静态配置合并进 themeConfig.sidebar
+const eventsSidebar = [
+  {
+    text: '活动',
+    link: '/events/',
+    collapsed: false,
+    items: getEventsList().map(({ title, url }) => ({ text: title, link: url }))
+  }
+]
+
+// 最新一篇活动：/events/ 导航入口页重定向的目标
+const latestEvent = getEventsList()[0]
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -126,6 +172,16 @@ export default defineConfig({
       ['meta', { name: 'twitter:card', content: SEO.twitterCard }]
     )
 
+    // 「活动」导航入口直达最新一篇：/events/ 入口页注入重定向
+    // （meta refresh 无 JS 兜底 + 脚本即时跳转；URL 带 .html 直达静态产物）
+    if (pageData.relativePath === 'events/index.md' && latestEvent) {
+      const target = `${latestEvent.url}.html`
+      frontmatter.head.push(
+        ['meta', { 'http-equiv': 'refresh', content: `0; url=${target}` }],
+        ['script', {}, `location.replace(${JSON.stringify(target)})`]
+      )
+    }
+
     return { frontmatter }
   },
   themeConfig: {
@@ -145,9 +201,10 @@ export default defineConfig({
       linkText: '返回首页'
     },
     outline: { level: 'deep', label: '本页概览' },
-    // 导航栏与文档侧边栏分别维护在 theme/config/nav.ts、theme/config/sidebar.ts（唯一数据源）
+    // 导航栏与文档侧边栏分别维护在 theme/config/nav.ts、theme/config/sidebar.ts（唯一数据源）；
+    // 「活动」分组由 config 扫描 events/ 目录自动生成（见 getEventsList）
     nav: NAV,
-    sidebar: SIDEBAR,
+    sidebar: { ...SIDEBAR, '/events/': eventsSidebar },
 
     // navbar 右侧媒体链接：与首页 SocialLinks.vue 共用 theme/config/links.ts 的 socials
     socialLinks: LINKS.socials.map((l) => ({

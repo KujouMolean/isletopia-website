@@ -8,7 +8,7 @@ tags:
   - 标签3
 author:
   - 梦幻之屿管理组
-sidebar: false
+
 aliases:
 description: 
 category: events

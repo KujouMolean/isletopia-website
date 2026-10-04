@@ -86,7 +86,6 @@ content:
         default: [梦幻之屿管理组]
       - { name: category, label: 分类, type: string, default: events, hidden: true }
       - { name: layout, label: 布局, type: string, default: doc, hidden: true }
-      - { name: sidebar, label: 显示侧边栏, type: boolean, default: false, hidden: true }
       - { name: hide, label: 在动态页隐藏, type: boolean, default: false }
       - { name: aliases, label: 别名, type: string, list: true, hidden: true }
       - { name: body, label: 正文, type: rich-text }
