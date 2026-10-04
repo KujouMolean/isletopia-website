@@ -81,7 +81,7 @@ function getEventsList(): EventItem[] {
   return list
 }
 
-// 侧边栏「活动」分组：与 wiki/beginner 的静态配置合并进 themeConfig.sidebar
+// 侧边栏「活动」分组：与 sidebar.ts 的 wiki 静态配置合并进 themeConfig.sidebar
 const eventsSidebar = [
   {
     text: '活动',

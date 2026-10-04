@@ -9,14 +9,8 @@ export const NAV: DefaultTheme.NavItem[] = [
   { text: '📰 最新动态', link: '/update' },
   // 「活动」入口：/events/ 页自动重定向到最新一篇活动，侧边栏列出全部活动（config.mts 扫描生成）
   { text: '🎉 活动', link: '/events/' },
-  {
-    text: '🧭 游玩指南',
-    items: [
-      { text: '📕 新手必看', link: '/beginner/' },
-      { text: '📚 Wiki', link: '/wiki/' },
-      { text: '📃 规则', link: '/beginner/规则' }
-    ]
-  },
+  // 新手必看/规则已并入 Wiki（侧边栏「新手必看」「高手必看」分组），导航收敛为单一 Wiki 入口
+  { text: '📚 Wiki', link: '/wiki/' },
   {
     text: '🗂️ 资源与工具',
     items: [

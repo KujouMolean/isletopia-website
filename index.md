@@ -29,7 +29,7 @@ features:
       title: 困难空岛
       desc: 实现李芒果空岛的相关特性，是当前最流行的生电空岛高难玩法之一，面向热爱折腾、追求极限的硬核玩家。
   moreText: 查看全部特色玩法
-  moreLink: /beginner/特色玩法
+  moreLink: /wiki/新手必看/特色玩法
 
 steps:
   title: 新手入服，只需三步
@@ -54,7 +54,7 @@ steps:
     - text: Axolotl 启动器
       href: https://axlmc.org/
   cta: { text: 加入 QQ 群, link: /join-us }
-  guide: { text: 入服教程, link: /beginner/入服教程 }
+  guide: { text: 入服教程, link: /wiki/新手必看/入服教程 }
 ---
 <!-- 第一屏 -->
 <VideoBackground>

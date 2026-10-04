@@ -160,25 +160,38 @@ content:
   # 二、静态文档集合
   # ===========================================================================
 
-  # 5. 新手指南
-  - name: beginner
-    label: 新手指南
+  # 5. 新手指南 —— 已并入 Wiki（wiki/新手必看/、wiki/高手必看/），见 6.x 集合
+  - name: wiki-beginner
+    label: Wiki · 新手必看
     type: collection
-    path: beginner
+    path: wiki/新手必看
     filename: "{primary}.md"
     format: yaml-frontmatter
     view:
       fields: [title]
       primary: title
     fields:
-      - { name: title, label: 标题, type: string }
+      - { name: title, label: 页面标题, type: string, required: true }
       - { name: description, label: 页面描述, type: text }
-      - { name: sidebar, label: 显示侧边栏, type: boolean, default: false }
+      - { name: body, label: 正文, type: rich-text }
+
+  - name: wiki-advanced
+    label: Wiki · 高手必看
+    type: collection
+    path: wiki/高手必看
+    filename: "{primary}.md"
+    format: yaml-frontmatter
+    view:
+      fields: [title]
+      primary: title
+    fields:
+      - { name: title, label: 页面标题, type: string, required: true }
+      - { name: description, label: 页面描述, type: text }
       - { name: body, label: 正文, type: rich-text }
 
   # 6. Wiki —— 按主题侧边栏（theme/config/sidebar.ts）的分组拆成二级目录集合，
   #    在 CMS 里新建 Wiki 文档时会直接落进对应分类目录；目录与侧边栏分组一一对应：
-  #    空岛类型/ 岛屿特性/ 资源获取/ 特殊功能/ 便利功能/ 系统功能/ 服务器小游戏/ 群内小游戏/ QQ群功能/
+  #    新手必看/ 高手必看/ 空岛类型/ 岛屿特性/ 资源获取/ 特殊功能/ 便利功能/ 系统功能/ 服务器小游戏/ 群内小游戏/ QQ群功能/
   # 6.0 Wiki 总览页（wiki/index.md）
   - name: wiki-index
     label: Wiki 总览

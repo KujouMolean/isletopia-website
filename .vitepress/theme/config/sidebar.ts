@@ -1,14 +1,32 @@
-// 文档侧边栏（唯一数据源）：beginner 与 wiki 两个目录全量启用；分组可折叠、默认收起
+// 文档侧边栏（唯一数据源）：wiki 全量启用（新手必看/高手必看已并入）；分组可折叠、默认收起
 // （collapsed: true），当前页所在分组挂载/切页时会自动展开。其他根级路径（blogs、
 // changelog 等）不匹配任何 key，不受影响。
-// 消费方：config.mts（themeConfig.sidebar）。增删页面条目、调整分组只动这里；
-// 注意新增页面后要在这里同步登记，否则页面左侧无目录。
+// 消费方：config.mts（themeConfig.sidebar，另「活动」分组由 config 扫描 events/ 生成）。
+// 增删页面条目、调整分组只动这里；注意新增页面后要在这里同步登记，否则页面左侧无目录。
 
 import type { DefaultTheme } from 'vitepress'
 
 export const SIDEBAR: DefaultTheme.Sidebar = {
   '/wiki/': [
     { text: 'Wiki 总览', link: '/wiki/' },
+    {
+      text: '新手必看',
+      link: '/wiki/新手必看/',
+      collapsed: true,
+      items: [
+        { text: '入服教程', link: '/wiki/新手必看/入服教程' },
+        { text: '特色玩法', link: '/wiki/新手必看/特色玩法' },
+        { text: '规则', link: '/wiki/新手必看/规则' }
+      ]
+    },
+    {
+      text: '高手必看',
+      collapsed: true,
+      items: [
+        { text: '部分物资获取', link: '/wiki/高手必看/部分物资获取' },
+        { text: '推荐下载的模组安装使用', link: '/wiki/高手必看/推荐下载的模组安装使用' }
+      ]
+    },
     {
       text: '岛屿',
       link: '/wiki/空岛类型/',
@@ -136,26 +154,6 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
         { text: '钓鱼', link: '/wiki/群内小游戏/钓鱼' },
         { text: '农场', link: '/wiki/群内小游戏/农场' },
         { text: '模拟炒股', link: '/wiki/群内小游戏/模拟炒股' }
-      ]
-    }
-  ],
-  '/beginner/': [
-    {
-      text: '新手必看',
-      collapsed: true,
-      link: '/beginner/',
-      items: [
-        { text: '入服教程', link: '/beginner/入服教程' },
-        { text: '特色玩法', link: '/beginner/特色玩法' },
-        { text: '规则', link: '/beginner/规则' }
-      ]
-    },
-    {
-      text: '高手必看',
-      collapsed: true,
-      items: [
-        { text: '部分物资获取', link: '/beginner/部分物资获取' },
-        { text: '推荐下载的模组安装使用', link: '/beginner/推荐下载的模组安装使用' },
       ]
     }
   ]
