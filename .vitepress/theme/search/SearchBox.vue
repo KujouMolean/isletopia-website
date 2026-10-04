@@ -4,6 +4,7 @@
 // 页面生效）。两种用法：markdown 里 <SearchBox />（页面级宽版，需在
 // theme/index.ts 全局注册）；Layout 的 sidebar-nav-before 里 <SearchBox compact />
 // （侧边栏窄容器紧凑版）。
+import { SEARCH_PLACEHOLDER, SEARCH_PLACEHOLDER_COMPACT } from '../config/search.mjs'
 import { shortcutDisplay } from './shortcut'
 import { toggleSearch } from './state'
 
@@ -31,7 +32,7 @@ const keys = shortcutDisplay()
         <path d="m20 20-3.5-3.5" />
       </svg>
       <span class="placeholder">{{
-        compact ? '搜索 wiki / 新手教程…' : '搜索 wiki 全部文档：空岛类型、特性机制、小游戏、指令…'
+        compact ? SEARCH_PLACEHOLDER_COMPACT : SEARCH_PLACEHOLDER
       }}</span>
       <span v-if="!compact" class="kbd" aria-hidden="true">{{ keys.join(' ') }}</span>
     </button>
@@ -41,7 +42,7 @@ const keys = shortcutDisplay()
 <style scoped>
 /* 页面内留白：与上方引言、下方目录拉开距离 */
 .search-box-wrap {
-  margin: 1.25rem 0 0.5rem;
+  margin: 0.75rem 0 0.75rem;
 }
 
 /* 伪装成输入框的按钮：浅底、分隔线描边，悬停转主题色并浮起 */
@@ -106,7 +107,7 @@ const keys = shortcutDisplay()
 
 /* —— 侧边栏紧凑变体（<SearchBox compact />）：窄容器下收窄内边距、精简留白 —— */
 .search-box-wrap.compact {
-  margin: 0.25rem 0 0.75rem;
+  margin: 0.75rem 0 0.75rem;
 }
 
 .search-box-wrap.compact .search-box {

@@ -6,12 +6,24 @@
 // 弹窗内给出构建提示。
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useData, useRouter } from 'vitepress'
+import {
+  SEARCH_ERROR,
+  SEARCH_HINT,
+  SEARCH_HINT_SUB,
+  SEARCH_INPUT_PLACEHOLDER,
+  SEARCH_LOADING,
+  SEARCH_NO_RESULT,
+  SEARCH_NO_RESULT_SUB
+} from '../config/search.mjs'
 import { search, warmup, type SearchResult } from './engine'
 import { matchesShortcut, parseShortcut, pathInScope } from './shortcut'
 import { searchState, toggleSearch } from './state'
 
 const router = useRouter()
 const { page } = useData()
+
+// 无结果提示里的 {query} 占位符替换为当前输入（配置串 → 界面文案）
+const noResultTitle = computed(() => SEARCH_NO_RESULT.replace('{query}', query.value.trim()))
 
 const query = ref('')
 const results = ref<SearchResult[]>([])
@@ -163,7 +175,7 @@ onBeforeUnmount(() => {
               v-model="query"
               class="search-input"
               type="text"
-              placeholder="搜索 wiki / 新手教程…（支持中文、英文指令）"
+              :placeholder="SEARCH_INPUT_PLACEHOLDER"
               aria-label="搜索关键词"
             />
             <button class="search-close" type="button" aria-label="关闭搜索" @click="toggleSearch(false)">
@@ -173,8 +185,8 @@ onBeforeUnmount(() => {
 
           <div ref="listEl" class="search-results">
             <div v-if="status === 'idle'" class="search-hint">
-              <p>输入关键词，全文搜索 wiki 与新手教程。</p>
-              <p class="sub">支持中文词语、英文指令（如 /visit）、混合词（如 惊变空岛100天）</p>
+              <p>{{ SEARCH_TIP }}</p>
+              <p class="sub">{{ SEARCH_TIP_SUB }}</p>
             </div>
 
             <div v-else-if="status === 'error'" class="search-hint">
@@ -183,17 +195,17 @@ onBeforeUnmount(() => {
                 <p class="sub">运行 <code>pnpm docs:build && pnpm docs:preview</code> 体验完整搜索。</p>
               </template>
               <template v-else>
-                <p>搜索索引加载失败，请刷新页面重试。</p>
+                <p>{{ SEARCH_ERROR }}</p>
               </template>
             </div>
 
             <div v-else-if="pending && !results.length" class="search-hint">
-              <p>正在加载搜索索引…</p>
+              <p>{{ SEARCH_LOADING }}</p>
             </div>
 
             <div v-else-if="!results.length" class="search-hint">
-              <p>没有找到与「{{ query }}」相关的页面。</p>
-              <p class="sub">试试更短的关键词，或换个说法。</p>
+              <p>{{ noResultTitle }}</p>
+              <p class="sub">{{ SEARCH_NO_RESULT_SUB }}</p>
             </div>
 
             <template v-else>
