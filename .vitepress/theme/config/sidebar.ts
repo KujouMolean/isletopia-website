@@ -1,5 +1,6 @@
-// 文档侧边栏（唯一数据源）：beginner 与 wiki 两个目录全量启用；分组默认展开（不设 collapsed），
-// 当前页自动高亮。其他根级路径（blogs、changelog 等）不匹配任何 key，不受影响。
+// 文档侧边栏（唯一数据源）：beginner 与 wiki 两个目录全量启用；分组可折叠、默认收起
+// （collapsed: true），当前页所在分组挂载/切页时会自动展开。其他根级路径（blogs、
+// changelog 等）不匹配任何 key，不受影响。
 // 消费方：config.mts（themeConfig.sidebar）。增删页面条目、调整分组只动这里；
 // 注意新增页面后要在这里同步登记，否则页面左侧无目录。
 
@@ -11,6 +12,7 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
     {
       text: '岛屿',
       link: '/wiki/空岛类型/',
+      collapsed: true,
       items: [
         { text: '经典空岛', link: '/wiki/空岛类型/经典空岛' },
         { text: '单方块空岛', link: '/wiki/空岛类型/单方块空岛' },
@@ -29,6 +31,7 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
     },
     {
       text: '岛屿特性',
+      collapsed: true,
       items: [
         { text: '单方块', link: '/wiki/单方块' },
         { text: '九选一', link: '/wiki/九选一' },
@@ -43,6 +46,7 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
     },
     {
       text: '资源获取',
+      collapsed: true,
       items: [
         { text: '刷石机出矿', link: '/wiki/刷石机出矿' },
         { text: '空岛合成配方', link: '/wiki/空岛合成配方' },
@@ -52,6 +56,7 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
     },
     {
       text: '特殊功能',
+      collapsed: true,
       items: [
         { text: '幻形', link: '/wiki/幻形' },
         { text: '幻形图鉴', link: '/wiki/幻形图鉴' },
@@ -64,6 +69,7 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
     {
       text: '便利功能',
       link: '/wiki/便利功能/',
+      collapsed: true,
       items: [
         { text: '自动铺路', link: '/wiki/便利功能/自动铺路' },
         { text: '铁电梯', link: '/wiki/便利功能/铁电梯' },
@@ -86,7 +92,8 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
       ]
     },
     {
-      text: '系统与社区',
+      text: '系统功能',
+      collapsed: true,
       items: [
         { text: '岛屿系统', link: '/wiki/岛屿系统' },
         { text: '玩家系统', link: '/wiki/玩家系统' },
@@ -96,6 +103,7 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
     {
       text: '服务器小游戏',
       link: '/wiki/服务器小游戏/',
+      collapsed: true,
       items: [
         { text: '通用游玩流程', link: '/wiki/服务器小游戏/通用游玩流程' },
         { text: '掘一死战', link: '/wiki/服务器小游戏/掘一死战' },
@@ -120,6 +128,7 @@ export const SIDEBAR: DefaultTheme.Sidebar = {
     },
     {
       text: 'QQ群功能',
+      collapsed: true,
       items: [
         { text: 'QQ 机器人绑定', link: '/wiki/QQ机器人绑定' },
         { text: '每日签到', link: '/wiki/群内小游戏/每日签到' },
