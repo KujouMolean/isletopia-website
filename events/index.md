@@ -1,6 +1,7 @@
 ---
 title: 活动
 description: 梦幻之屿服务器活动一览
+hide: true
 ---
 
 <!-- 导航「活动」入口页：构建时注入重定向（meta refresh + 脚本），自动跳转到最新一篇活动。
