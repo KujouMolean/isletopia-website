@@ -84,6 +84,36 @@ content:
         type: string
         list: true
         default: [梦幻之屿管理组]
+      # 活动信息（站点由 EventInfoTable.vue 渲染成表格）；留空的子字段不会出现在页面上
+      - name: event
+        label: 活动信息
+        type: object
+        fields:
+          - name: type
+            label: 活动类型
+            type: select
+            options:
+              values: [宣传类, 创作类, 评分类]
+          - name: deadline
+            label: 截止日期（YYYY-MM-DD 或 长期）
+            type: string
+          - { name: platform, label: 活动平台, type: string }
+          - { name: link, label: 参与链接, type: string }
+          - name: rewards
+            label: 活动奖励
+            type: object
+            list:
+              collapsible:
+                collapsed: true
+                summary: "{item}（{count}）"
+            fields:
+              - { name: item, label: 物品名称, type: string, required: true }
+              - { name: count, label: 数量（1、1~2、不超过3 等均可）, type: string }
+          - { name: limit, label: 参与限制, type: text }
+          - name: contact
+            label: 负责管理员
+            type: string
+            list: true
       - { name: category, label: 分类, type: string, default: events, hidden: true }
       - { name: layout, label: 布局, type: string, default: doc, hidden: true }
       - { name: hide, label: 在动态页隐藏, type: boolean, default: false }

@@ -12,7 +12,8 @@ interface RewardRow {
   count: string | number
 }
 
-// rewards 统一归一为 { item, count } 列表，兼容旧式纯字符串写法（视为 1 个）
+// rewards 统一归一为 { item, count } 列表；兼容旧式纯字符串写法（视为 1 个），
+// 以及 CMS 留空的数量（空字符串同样视为 1 个）
 const rewards = computed<RewardRow[]>(() => {
   const raw = event.value?.rewards
   if (!Array.isArray(raw)) return []
@@ -20,7 +21,7 @@ const rewards = computed<RewardRow[]>(() => {
     .map((r: any) =>
       typeof r === 'string'
         ? { item: r, count: 1 }
-        : { item: String(r?.item ?? ''), count: r?.count ?? 1 }
+        : { item: String(r?.item ?? ''), count: r?.count === '' || r?.count == null ? 1 : r.count }
     )
     .filter((r: RewardRow) => r.item)
 })
