@@ -1,16 +1,19 @@
 <script setup lang="ts">
-// 页面级搜索入口：给 /wiki/index.md 这类索引页提供一个醒目的搜索框，
-// 点击打开全局单例的搜索弹窗（弹窗挂在 Layout 上，由 config/search.mjs 的
-// SEARCH_SHORTCUT 定义快捷键、SEARCH_SOURCES 决定在哪些页面生效）。
-// 在 markdown 中使用前需在 theme/index.ts 全局注册。
+// 搜索入口组件：点击打开全局单例的搜索弹窗（弹窗挂在 Layout 上，由
+// config/search.mjs 的 SEARCH_SHORTCUT 定义快捷键、SEARCH_SOURCES 决定在哪些
+// 页面生效）。两种用法：markdown 里 <SearchBox />（页面级宽版，需在
+// theme/index.ts 全局注册）；Layout 的 sidebar-nav-before 里 <SearchBox compact />
+// （侧边栏窄容器紧凑版）。
 import { shortcutDisplay } from './shortcut'
 import { toggleSearch } from './state'
+
+defineProps<{ compact?: boolean }>()
 
 const keys = shortcutDisplay()
 </script>
 
 <template>
-  <div class="search-box-wrap">
+  <div class="search-box-wrap" :class="{ compact }">
     <button class="search-box" type="button" aria-label="打开搜索" @click="toggleSearch(true)">
       <svg
         class="icon"
@@ -27,8 +30,10 @@ const keys = shortcutDisplay()
         <circle cx="11" cy="11" r="7" />
         <path d="m20 20-3.5-3.5" />
       </svg>
-      <span class="placeholder">搜索 wiki 全部文档：空岛类型、特性机制、小游戏、指令…</span>
-      <span class="kbd" aria-hidden="true">{{ keys.join(' ') }}</span>
+      <span class="placeholder">{{
+        compact ? '搜索 wiki / 新手教程…' : '搜索 wiki 全部文档：空岛类型、特性机制、小游戏、指令…'
+      }}</span>
+      <span v-if="!compact" class="kbd" aria-hidden="true">{{ keys.join(' ') }}</span>
     </button>
   </div>
 </template>
@@ -97,5 +102,20 @@ const keys = shortcutDisplay()
   .search-box .kbd {
     display: none;
   }
+}
+
+/* —— 侧边栏紧凑变体（<SearchBox compact />）：窄容器下收窄内边距、精简留白 —— */
+.search-box-wrap.compact {
+  margin: 0.25rem 0 0.75rem;
+}
+
+.search-box-wrap.compact .search-box {
+  padding: 0.45rem 0.7rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.search-box-wrap.compact .placeholder {
+  color: var(--vp-c-text-3);
 }
 </style>

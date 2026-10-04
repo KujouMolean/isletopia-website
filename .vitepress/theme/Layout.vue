@@ -6,6 +6,7 @@ import SiteFooter from './components/SiteFooter.vue'
 import ArticleMeta from './components/ArticleMeta.vue'
 import SiteBanner from './components/SiteBanner.vue'
 import SidebarToolbar from './components/SidebarToolbar.vue'
+import SearchBox from './search/SearchBox.vue'
 import SearchModal from './search/SearchModal.vue'
 
 // 打开页面时，左侧目录自动滚动，把当前页对应条目定位到可视区中部（而非 nearest
@@ -41,8 +42,9 @@ onMounted(scrollSidebarToActive)
     <template #layout-top>
       <SiteBanner />
     </template>
-    <!-- 左侧目录顶部：折叠全部 / 全部展开 工具栏（分组折叠状态在 VPSidebarItem 内部，见组件说明） -->
+    <!-- 左侧目录顶部：搜索入口（紧凑变体，与 Ctrl+K 开同一个弹窗）+ 折叠工具栏 -->
     <template #sidebar-nav-before>
+      <SearchBox compact />
       <SidebarToolbar />
     </template>
     <!-- 该版本的 Layout 无 footer slot，用 layout-bottom 把统一页脚挂到所有页面底部 -->
