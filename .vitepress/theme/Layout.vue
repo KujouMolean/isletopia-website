@@ -1,8 +1,36 @@
 <script setup lang="ts">
+import { nextTick, onMounted, watch } from 'vue'
+import { useRoute } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import SiteFooter from './components/SiteFooter.vue'
 import ArticleMeta from './components/ArticleMeta.vue'
 import SiteBanner from './components/SiteBanner.vue'
+
+// 打开页面时，左侧目录自动滚动，把当前页对应条目定位到可视区中部（而非 nearest
+// 贴边）：分组展开（collapsed 自动展开由 VitePress 处理）要等 nextTick 后 class
+// 才生效，再等两帧 rAF——既保证元素可见，也确保排在页脚随动逻辑之后执行。
+// 超出可滚动范围时钳制在上下限（短列表贴顶/贴底，不硬拽）。
+const route = useRoute()
+const scrollSidebarToActive = async () => {
+  await nextTick()
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => {
+      const sidebar = document.querySelector('.VPSidebar')
+      const active = sidebar?.querySelector('[aria-current="page"]')
+      if (!sidebar || !active) return
+      const sidebarRect = sidebar.getBoundingClientRect()
+      const activeRect = active.getBoundingClientRect()
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      const behavior: ScrollBehavior = reduced ? 'auto' : 'smooth'
+      const offset = sidebar.scrollTop + activeRect.top - sidebarRect.top
+      const max = sidebar.scrollHeight - sidebar.clientHeight
+      const target = Math.min(max, Math.max(0, offset - (sidebar.clientHeight - activeRect.height) / 2))
+      sidebar.scrollTo({ top: target, behavior })
+    })
+  )
+}
+watch(() => route.path, scrollSidebarToActive)
+onMounted(scrollSidebarToActive)
 </script>
 
 <template>
