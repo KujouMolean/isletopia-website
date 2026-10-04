@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useData, useRoute } from 'vitepress'
-import { onMounted, ref, nextTick, computed } from 'vue'
+import { useData, useRoute, onContentUpdated } from 'vitepress'
+import { ref, computed } from 'vue'
 import { CATEGORY_LABELS } from '../utils/articleFeed'
 
 const { frontmatter } = useData()
@@ -52,24 +52,23 @@ function toggleExpand() {
 }
 
 // 在第一个 h1 后面插入元信息
-onMounted(async () => {
+// 用 onContentUpdated 而非 onMounted：组件挂在 #doc-after 插槽上，SPA 切页时实例不
+// 会重新挂载，onMounted 只在首次加载执行一次；而插入的容器随旧页 Content DOM 一起
+// 被移除，导致切页后元信息消失。onContentUpdated 在每次导航内容挂载后（含首次加载）
+// 触发，重置插入状态并把容器重新插到新页面的第一个 h1 之后。
+onContentUpdated(() => {
+  isInserted.value = false
+  isExpanded.value = false
+
   // 只对「动态」文章页生效（目录与 NewsFeed.vue 的 glob 保持一致）
   if (!/^\/(blogs|events|changelog|notices)\//.test(route.path)) return
 
-  // 等待 DOM 更新
-  await nextTick()
-
-  // 查找文档内容区域
-  const docContent = document.querySelector('.vp-doc')
-  if (!docContent) return
-
-  // 查找第一个 h1
-  const h1 = docContent.querySelector('h1')
-  if (!h1) return
+  // 查找文档内容区域中的第一个 h1
+  const h1 = document.querySelector('.vp-doc h1')
 
   // 获取容器元素
   const container = containerRef.value
-  if (!container) return
+  if (!h1 || !container) return
 
   // 在 h1 后面插入容器
   h1.insertAdjacentElement('afterend', container)
