@@ -5,6 +5,7 @@ import DefaultTheme from 'vitepress/theme'
 import SiteFooter from './components/SiteFooter.vue'
 import ArticleMeta from './components/ArticleMeta.vue'
 import SiteBanner from './components/SiteBanner.vue'
+import SidebarToolbar from './components/SidebarToolbar.vue'
 
 // 打开页面时，左侧目录自动滚动，把当前页对应条目定位到可视区中部（而非 nearest
 // 贴边）：分组展开（collapsed 自动展开由 VitePress 处理）要等 nextTick 后 class
@@ -38,6 +39,10 @@ onMounted(scrollSidebarToActive)
     <!-- 全局横幅(导航栏上方):重大/紧急通知或未完工状态,内容在 theme/config/banner.ts 增编 -->
     <template #layout-top>
       <SiteBanner />
+    </template>
+    <!-- 左侧目录顶部：折叠全部 / 全部展开 工具栏（分组折叠状态在 VPSidebarItem 内部，见组件说明） -->
+    <template #sidebar-nav-before>
+      <SidebarToolbar />
     </template>
     <!-- 该版本的 Layout 无 footer slot，用 layout-bottom 把统一页脚挂到所有页面底部 -->
     <template #layout-bottom>
