@@ -2,6 +2,7 @@
 import { useData, useRoute, onContentUpdated } from 'vitepress'
 import { ref, computed } from 'vue'
 import { CATEGORY_LABELS } from '../utils/articleFeed'
+import EventInfoTable from './EventInfoTable.vue'
 
 const { frontmatter } = useData()
 const route = useRoute()
@@ -9,8 +10,9 @@ const containerRef = ref<HTMLElement | null>(null)
 const isInserted = ref(false)
 const isExpanded = ref(false)
 
-// 标准元数据字段列表（lastUpdated、head 由构建时 transformPageData 注入，head 仅供 VitePress 注入 <head>，不展示）
-const standardFields = ['title', 'date', 'time', 'lastUpdated', 'hide', 'tags', 'author', 'sidebar', 'aliases', 'description', 'category', 'layout', 'head']
+// 标准元数据字段列表（lastUpdated、head 由构建时 transformPageData 注入，head 仅供 VitePress 注入 <head>，不展示；
+// event 由 EventInfoTable.vue 以活动信息表形式专门展示，不进入自定义字段）
+const standardFields = ['title', 'date', 'time', 'lastUpdated', 'hide', 'tags', 'author', 'sidebar', 'aliases', 'description', 'category', 'layout', 'head', 'event']
 
 // 获取自定义元数据字段（非标准字段）
 const customFields = computed(() => {
@@ -35,7 +37,8 @@ function hasMeta(): boolean {
     frontmatter.value.lastUpdated ||
     frontmatter.value.author ||
     frontmatter.value.category ||
-    frontmatter.value.tags)
+    frontmatter.value.tags ||
+    frontmatter.value.event)
 }
 
 // 检查是否有可折叠的信息（最后修改时间、分类、标签或自定义字段）
@@ -241,6 +244,9 @@ onContentUpdated(() => {
         </button>
       </div>
     </Transition>
+
+    <!-- 活动信息表：frontmatter 含 event 节点时展示，置于 article-meta 元信息之后 -->
+    <EventInfoTable />
   </div>
 </template>
 
