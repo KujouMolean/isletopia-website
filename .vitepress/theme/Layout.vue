@@ -56,7 +56,7 @@ onMounted(scrollSidebarToActive)
       <ArticleMeta />
     </template>
     <!-- 全站搜索弹窗（全局单例）：本体是 Teleport 到 body 的不可见容器，
-         导航栏上不渲染任何东西；快捷键按 config/search.mjs 的 SEARCH_SOURCES
+         导航栏上不渲染任何东西；快捷键按 config/search.ts 的 SEARCH_SOURCES
          门控、SEARCH_SHORTCUT 配置，页面可见入口是 markdown 里的 <SearchBox /> -->
     <template #nav-bar-content-after>
       <SearchModal />

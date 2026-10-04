@@ -1,6 +1,8 @@
-// 全站搜索的共享分词器：构建期（scripts/build-search-index.mjs）与浏览器查询端
+// 全站搜索的共享分词器：构建期（scripts/build-search-index.ts）与浏览器查询端
 // （theme/search/engine.ts）必须使用同一实现，索引与查询的词才能对上。
-// 用纯 .mjs + JSDoc 而非 TS，是为了让 Node 构建脚本零转换直接 import。
+//
+// 运行环境：构建脚本由 Node 直接执行本文件（类型剥离，仅支持可擦除语法），
+// 要求 Node ≥ 22.18 / 23.6+（推荐 24 LTS，见仓库根 .node-version）。
 //
 // 分词规则（中文搜索的 bigram 方案，无词典依赖）：
 // - CJK 连续段（汉字/假名）：每字出 1-gram、每相邻两字出 1 个 bigram。
@@ -14,7 +16,7 @@
 // 那是索引策略，不属于分词本身，这里保持纯粹。
 
 /** CJK 判定：汉字（含扩展 A、兼容表意）+ 假名。够覆盖本站内容，刻意不收谚文/西文。 */
-function isCJK(code) {
+function isCJK(code: number): boolean {
   return (
     (code >= 0x3400 && code <= 0x9fff) ||
     (code >= 0xf900 && code <= 0xfaff) ||
@@ -23,7 +25,7 @@ function isCJK(code) {
 }
 
 /** ASCII 字母或数字。 */
-function isASCIIWord(code) {
+function isASCIIWord(code: number): boolean {
   return (
     (code >= 0x30 && code <= 0x39) ||
     (code >= 0x41 && code <= 0x5a) ||
@@ -31,13 +33,9 @@ function isASCIIWord(code) {
   )
 }
 
-/**
- * 把任意文本切成索引/查询共用的 token 序列。
- * @param {string} input 任意文本（HTML 已剥除的纯文本、标题、查询词均可）
- * @returns {string[]}
- */
-export function tokenize(input) {
-  const tokens = []
+/** 把任意文本切成索引/查询共用的 token 序列（HTML 已剥除的纯文本、标题、查询词均可）。 */
+export function tokenize(input: string): string[] {
+  const tokens: string[] = []
   if (!input) return tokens
   let run = ''
   let runIsCJK = false
@@ -52,7 +50,7 @@ export function tokenize(input) {
     run = ''
   }
   for (const ch of input) {
-    const code = ch.codePointAt(0)
+    const code = ch.codePointAt(0) as number
     const cjk = isCJK(code)
     if (cjk || isASCIIWord(code)) {
       // 与上一段同类则续接游程，否则先结清上一段
@@ -71,15 +69,14 @@ export function tokenize(input) {
  * 从原始查询串里提取「高亮单元」：CJK 游程整段（如 空岛生存）+ ASCII 整词。
  * 与 tokenize 的区别：保留原始大小写与完整词形，用于结果摘要里划 <mark>，
  * 比按 token 划分更贴近用户输入。CJK 单字游程也保留（搜「鱼」要能高亮「鱼」）。
- * @param {string} query
- * @returns {string[]} 按长度降序（长短语优先占位，避免被子串先划碎）
+ * 返回值按长度降序（长短语优先占位，避免被子串先划碎）。
  */
-export function highlightUnits(query) {
-  const units = []
+export function highlightUnits(query: string): string[] {
+  const units: string[] = []
   const re = /[\u3040-\u30ff\u3400-\u9fff\uf900-\ufaff]+|[a-zA-Z0-9]+/g
   for (const m of query.matchAll(re)) {
     const u = m[0]
-    if (isCJK(u.codePointAt(0)) || u.length >= 2) units.push(u)
+    if (isCJK(u.codePointAt(0) as number) || u.length >= 2) units.push(u)
   }
   return units.sort((a, b) => b.length - a.length)
 }

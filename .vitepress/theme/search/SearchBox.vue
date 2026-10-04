@@ -1,10 +1,10 @@
 <script setup lang="ts">
 // 搜索入口组件：点击打开全局单例的搜索弹窗（弹窗挂在 Layout 上，由
-// config/search.mjs 的 SEARCH_SHORTCUT 定义快捷键、SEARCH_SOURCES 决定在哪些
+// config/search.ts 的 SEARCH_SHORTCUT 定义快捷键、SEARCH_SOURCES 决定在哪些
 // 页面生效）。两种用法：markdown 里 <SearchBox />（页面级宽版，需在
 // theme/index.ts 全局注册）；Layout 的 sidebar-nav-before 里 <SearchBox compact />
 // （侧边栏窄容器紧凑版）。
-import { SEARCH_PLACEHOLDER, SEARCH_PLACEHOLDER_COMPACT } from '../config/search.mjs'
+import { SEARCH_PLACEHOLDER, SEARCH_PLACEHOLDER_COMPACT } from '../config/search'
 import { shortcutDisplay } from './shortcut'
 import { toggleSearch } from './state'
 
@@ -55,7 +55,7 @@ const keys = shortcutDisplay()
   padding: 0.65rem 1rem;
   border: 1px solid var(--vp-c-divider);
   border-radius: 10px;
-  background: var(--vp-c-bg-alt);
+  background: var(--vp-c-bg);
   color: var(--vp-c-text-3);
   font-family: inherit;
   font-size: 0.92rem;

@@ -6,15 +6,19 @@
 //
 // 为什么扫产物 HTML 而不是 md 源文件：标题锚点 id 由 VitePress 的 slugify 生成，
 // 从产物里直接读，跳转才不会对不上；同时 frontmatter、内嵌组件都已渲染完毕。
+//
+// 运行环境：由 Node 直接执行本文件（类型剥离，仅支持可擦除语法），要求
+// Node ≥ 22.18 / 23.6+（推荐 24 LTS，见仓库根 .node-version）。
+// 注意：Node 的类型剥离不做 import 扩展名推断，相对导入必须显式写 .ts。
 
 import { readdirSync, readFileSync, statSync, mkdirSync, writeFileSync } from 'node:fs'
 import { join, resolve, dirname, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { gzipSync } from 'node:zlib'
 import { parse } from 'node-html-parser'
-import { tokenize } from '../.vitepress/search/tokenizer.mjs'
+import { tokenize } from '../.vitepress/search/tokenizer.ts'
 // 索引范围白名单与前端共用同一份配置（唯一数据源，含搜索快捷键定义）
-import { SEARCH_SOURCES } from '../.vitepress/theme/config/search.mjs'
+import { SEARCH_SOURCES } from '../.vitepress/theme/config/search.ts'
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const distDir = resolve(repoRoot, '.vitepress/dist')
@@ -36,7 +40,7 @@ const PRUNE_DF_MIN = 20
 
 // ---------- 收集白名单内的产物 HTML ----------
 
-function walkHtml(dir, out) {
+function walkHtml(dir: string, out: string[]): void {
   for (const name of readdirSync(dir)) {
     const p = join(dir, name)
     if (statSync(p).isDirectory()) walkHtml(p, out)
@@ -49,7 +53,7 @@ if (!statSync(distDir, { throwIfNoEntry: false })) {
   process.exit(1)
 }
 
-const htmlFiles = []
+const htmlFiles: string[] = []
 walkHtml(distDir, htmlFiles)
 
 // 文件路径 → 站点 URL（如 dist/wiki/钓鱼.html → /wiki/钓鱼.html）；中文路径保持
@@ -76,26 +80,33 @@ const BLOCK_TAGS = new Set([
   'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'details', 'summary', 'hr', 'br', 'dl', 'dt', 'dd'
 ])
 
-const normalize = (text) =>
+const normalize = (text: string): string =>
   text.replace(/[\u200b\u200c\u200d\ufeff]/g, '').replace(/\s+/g, ' ').trim()
+
+interface Section {
+  id: string | null // 锚点 id；null 表示引言段（跳页首）
+  h2: string
+  h3: string
+  x: string // 章节纯文本
+}
 
 /**
  * 按文档顺序走一遍 vp-doc：h1 记为页面标题，h2/h3（及其锚点 id）切分章节，
- * 其余文本累积进当前章节。返回 { title, secs: [{ id, h2, h3, x }] }，
- * 其中 h3 章节带 h2 供前端拼面包屑；引言（h1 后、首个 h2 前）id 为 null。
+ * 其余文本累积进当前章节。h3 章节带 h2 供前端拼面包屑；
+ * 引言（h1 后、首个 h2 前）id 为 null。
  */
-function extract(doc) {
+function extract(doc: ReturnType<typeof parse>): { title: string; secs: Section[] } {
   // 锚点「#」链接与代码块复制按钮是纯噪音，先摘掉再取文本
   for (const el of doc.querySelectorAll('a.header-anchor, button')) el.remove()
   let title = ''
   let curH2 = ''
-  let cur = { id: null, h2: '', h3: '', x: '' }
-  const secs = []
+  let cur: Section = { id: null, h2: '', h3: '', x: '' }
+  const secs: Section[] = []
   const push = () => {
     cur.x = normalize(cur.x)
     if (cur.x || cur.id) secs.push(cur)
   }
-  const walk = (node) => {
+  const walk = (node: ReturnType<typeof parse>): void => {
     for (const child of node.childNodes) {
       if (child.nodeType === 3) {
         // TextNode（.text 已解码 HTML 实体）：累积进当前章节
@@ -128,7 +139,7 @@ function extract(doc) {
 
 // ---------- 全量统计：加权词频 → 倒排表 ----------
 
-const docs = [] // { url, title, secs, tf }
+const docs: Array<{ url: string; title: string; secs: Section[]; tf: Map<string, number> }> = []
 for (const { file, url } of pages) {
   const root = parse(readFileSync(file, 'utf8'))
   const doc = root.querySelector('.vp-doc')
@@ -137,8 +148,8 @@ for (const { file, url } of pages) {
     continue
   }
   const { title, secs } = extract(doc)
-  const tf = new Map()
-  const add = (text, w) => {
+  const tf = new Map<string, number>()
+  const add = (text: string, w: number) => {
     if (!text) return
     for (const t of tokenize(text)) tf.set(t, (tf.get(t) || 0) + w)
   }
@@ -158,7 +169,7 @@ for (const { tf } of docs) for (const f of tf.values()) totalLen += f
 const avgLen = n ? totalLen / n : 1
 
 // 倒排表：term → [docId, tf, ...]（docId 做 delta 编码压体积；插入序已按 docId 升序）
-const postings = new Map()
+const postings = new Map<string, number[]>()
 docs.forEach(({ tf }, id) => {
   for (const [term, f] of tf) {
     let arr = postings.get(term)
@@ -174,9 +185,9 @@ for (const [term, arr] of postings) {
 }
 
 // docId delta 编码
-const terms = {}
+const terms: Record<string, number[]> = {}
 for (const [term, arr] of postings) {
-  const flat = []
+  const flat: number[] = []
   let prev = 0
   for (let i = 0; i < arr.length; i += 2) {
     flat.push(arr[i] - prev, arr[i + 1])
@@ -222,7 +233,7 @@ for (let i = 0; i * CHUNK < n; i++) {
 
 // ---------- 体积统计（raw / gzip，gzip 近似线上传输大小） ----------
 
-const kb = (b) => `${(b / 1024).toFixed(1)} KB`
+const kb = (b: number): string => `${(b / 1024).toFixed(1)} KB`
 const postingsCount = [...postings.values()].reduce((a, arr) => a + arr.length / 2, 0)
 console.log(
   `[search-index] 页面 ${n} | 词项 ${postings.size} | 词项-文档对 ${postingsCount} | 均长 ${Math.round(avgLen)}\n` +

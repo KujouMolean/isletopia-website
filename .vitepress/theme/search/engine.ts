@@ -7,7 +7,7 @@
 // 的片，用于挑选最佳章节和生成 <mark> 摘要。
 
 import { withBase } from 'vitepress'
-import { highlightUnits, tokenize } from '../../search/tokenizer.mjs'
+import { highlightUnits, tokenize } from '../../search/tokenizer'
 
 interface MetaDoc {
   u: string // 页面 URL（含 .html，中文路径保持原样）

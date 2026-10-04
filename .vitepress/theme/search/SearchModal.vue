@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// 全站搜索弹窗：全文检索 config/search.mjs 覆盖范围内的文档，BM25 排序 +
+// 全站搜索弹窗：全文检索 config/search.ts 覆盖范围内的文档，BM25 排序 +
 // 高亮摘要 + 锚点直达。作为全局单例挂在 Layout 上（本体是 Teleport 到 body
 // 的不可见容器，不在导航栏显示任何东西），快捷键与索引预取仅在覆盖范围内的
 // 页面生效；页面里的可见入口是 SearchBox 组件。dev 模式下索引产物不存在，
@@ -14,7 +14,7 @@ import {
   SEARCH_LOADING,
   SEARCH_NO_RESULT,
   SEARCH_NO_RESULT_SUB
-} from '../config/search.mjs'
+} from '../config/search'
 import { search, warmup, type SearchResult } from './engine'
 import { matchesShortcut, parseShortcut, pathInScope } from './shortcut'
 import { searchState, toggleSearch } from './state'

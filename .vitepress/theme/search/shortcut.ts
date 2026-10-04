@@ -2,7 +2,7 @@
 // KeyboardEvent 匹配器和界面展示用按键列表。刻意不依赖 vitepress 与浏览器
 // 专属 API（判 Mac 时对 navigator 做了守卫），可在 Node 里直接单测。
 
-import { SEARCH_SOURCES, SEARCH_SHORTCUT } from '../config/search.mjs'
+import { SEARCH_SOURCES, SEARCH_SHORTCUT } from '../config/search'
 
 export interface KeyCombo {
   ctrl: boolean
